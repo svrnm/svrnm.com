@@ -38,6 +38,14 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      - name: Verify submodules
+        # Ensure submodules are properly initialized
+        run: |
+          if [ -f .gitmodules ]; then
+            git submodule status
+            git submodule update --init --recursive || true
+          fi
+
       - name: Setup Hugo
         # OpenSSF: Pin to specific version (v2) - for maximum security, pin to full commit SHA
         uses: peaceiris/actions-hugo@v2

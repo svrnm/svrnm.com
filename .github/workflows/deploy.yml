@@ -33,7 +33,7 @@ jobs:
       - name: Checkout repository
         # OpenSSF: Pin to specific version (v4) - for maximum security, pin to full commit SHA
         # Example: uses: actions/checkout@b1ec3021b8fa02164da82ca1557d017d83b0e179
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 0

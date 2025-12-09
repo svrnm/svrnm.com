@@ -31,22 +31,23 @@ jobs:
       HUGO_VERSION: "0.146.0"
     steps:
       - name: Checkout repository
-        # Using pinned commit SHA for maximum security (OpenSSF best practice)
-        uses: actions/checkout@8ade135a41bc03eaacf13e3e22b91c0cbc34b0e6 # v4.2.2
+        # OpenSSF: Pin to specific version (v4) - for maximum security, pin to full commit SHA
+        # Example: uses: actions/checkout@b1ec3021b8fa02164da82ca1557d017d83b0e179
+        uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
 
       - name: Setup Hugo
-        # Using pinned commit SHA for maximum security (OpenSSF best practice)
-        uses: peaceiris/actions-hugo@4b4228029e7e8c7e0e0c8c7e0e0c8c7e0e0c8c7e # v2.9.2
+        # OpenSSF: Pin to specific version (v2) - for maximum security, pin to full commit SHA
+        uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: ${{ env.HUGO_VERSION }}
           extended: true
 
       - name: Setup Pages
-        # Using pinned commit SHA for maximum security (OpenSSF best practice)
-        uses: actions/configure-pages@983c8a10d5b4930df6f15b4b4b4b4b4b4b4b4b4b # v5.0.0
+        # OpenSSF: Pin to specific version (v5) - for maximum security, pin to full commit SHA
+        uses: actions/configure-pages@v5
         id: pages
 
       - name: Build with Hugo
@@ -56,8 +57,8 @@ jobs:
             --baseURL ${{ steps.pages.outputs.base_url }}
 
       - name: Upload artifact
-        # Using pinned commit SHA for maximum security (OpenSSF best practice)
-        uses: actions/upload-pages-artifact@56afc609e7f79e8b0e0c8c7e0e0c8c7e0e0c8c7e # v3.0.1
+        # OpenSSF: Pin to specific version (v3) - for maximum security, pin to full commit SHA
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
 
@@ -69,6 +70,7 @@ jobs:
     needs: build
     steps:
       - name: Deploy to GitHub Pages
-        # Using pinned commit SHA for maximum security (OpenSSF best practice)
-        uses: actions/deploy-pages@d6db90164c8c7e0e0c8c7e0e0c8c7e0e0c8c7e0e0c8c7e # v4.0.5
+        # OpenSSF: Pin to specific version (v4) - for maximum security, pin to full commit SHA
+        # Using OIDC for authentication (OpenSSF: prefer OIDC over PATs)
+        uses: actions/deploy-pages@v4
         id: deployment

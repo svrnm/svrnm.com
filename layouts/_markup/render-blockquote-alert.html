@@ -1,0 +1,29 @@
+{{- $iconMap := dict
+    "caution" "icons/siren.svg"
+    "note" "icons/info.svg"
+    "important" "icons/megaphone.svg"
+    "warning" "icons/triangle-alert.svg"
+    "tip" "icons/lightbulb.svg"
+  }}
+{{- $iconPath := index $iconMap .AlertType | default "icons/info.svg" }}
+{{- $icon := resources.Get $iconPath }}
+
+{{ if eq .Type "alert" }}
+<blockquote class="alert alert-{{ .AlertType }}">
+  <p class="alert-heading">
+    {{- if $icon }}
+    <span class="alert-icon">{{ $icon.Content | safeHTML }}</span>
+    {{- end }}
+    {{ with .AlertTitle }}
+    {{ . }}
+    {{ else }}
+    {{ or (i18n .AlertType) (title .AlertType) }}
+    {{ end }}
+  </p>
+  {{ .Text }}
+</blockquote>
+{{ else }}
+<blockquote>
+  {{ .Text }}
+</blockquote>
+{{ end }}

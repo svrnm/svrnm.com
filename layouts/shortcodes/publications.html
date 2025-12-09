@@ -1,0 +1,52 @@
+{{- $publications := .Page.Params.publications -}}
+{{- $action := .Get "action" | default "Read the full article" -}}
+{{- if $publications -}}
+{{- $count := len $publications -}}
+{{- if eq $count 1 -}}
+{{- $pub := index $publications 0 -}}
+{{- $logoHTML := "" }}
+{{- if $pub.logo }}
+{{- if hasPrefix $pub.logo "<svg" }}
+{{- $svgWithSize := replaceRE `(<svg[^>]*)(>)` "${1} width='20' height='20'${2}" $pub.logo }}
+{{- $logoHTML = printf "<span class='publication-logo publication-logo-large'>%s</span>" $svgWithSize }}
+{{- else }}
+{{- $logoResource := .Page.Resources.GetMatch $pub.logo }}
+{{- if $logoResource }}
+{{- $logoHTML = printf "<span class='publication-logo publication-logo-large'><img src='%s' alt='' height='20' width='20'></span>" $logoResource.RelPermalink }}
+{{- else }}
+{{- $logoHTML = printf "<span class='publication-logo publication-logo-large'><img src='%s' alt='' height='20' width='20'></span>" ($pub.logo | absURL) }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if $pub.url -}}
+<p><a href="{{ $pub.url }}" rel="noopener noreferrer" target="_blank">{{ $logoHTML | safeHTML }}{{ $action }} on {{ $pub.title }}</a></p>
+{{- else -}}
+<p>{{ $logoHTML | safeHTML }}Published on {{ $pub.title }}</p>
+{{- end -}}
+{{- else -}}
+<p>{{ $action }}{{ if gt $count 1 }}s{{ end }} on:
+{{- range $index, $pub := $publications -}}
+{{- if $index }}, {{ else }} {{ end -}}
+{{- $logoHTML := "" }}
+{{- if $pub.logo }}
+{{- if hasPrefix $pub.logo "<svg" }}
+{{- $svgWithSize := replaceRE `(<svg[^>]*)(>)` "${1} width='20' height='20'${2}" $pub.logo }}
+{{- $logoHTML = printf "<span class='publication-logo publication-logo-large'>%s</span>" $svgWithSize }}
+{{- else }}
+{{- $logoResource := $.Page.Resources.GetMatch $pub.logo }}
+{{- if $logoResource }}
+{{- $logoHTML = printf "<span class='publication-logo publication-logo-large'><img src='%s' alt='' height='20' width='20'></span>" $logoResource.RelPermalink }}
+{{- else }}
+{{- $logoHTML = printf "<span class='publication-logo publication-logo-large'><img src='%s' alt='' height='20' width='20'></span>" ($pub.logo | absURL) }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if $pub.url -}}
+<a href="{{ $pub.url }}" rel="noopener noreferrer" target="_blank">{{ $logoHTML | safeHTML }}{{ $pub.title }}</a>
+{{- else -}}
+{{ $logoHTML | safeHTML }}{{ $pub.title }}
+{{- end -}}
+{{- end -}}
+</p>
+{{- end -}}
+{{- end -}}

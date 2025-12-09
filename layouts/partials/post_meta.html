@@ -1,0 +1,77 @@
+{{- $scratch := newScratch }}
+
+{{- if not .Date.IsZero -}}
+{{- $scratch.Add "meta" (slice (printf "<span title='%s'>%s</span>" (.Date) (.Date | time.Format (default ":date_long" site.Params.DateFormat)))) }}
+{{- end }}
+
+{{- if (.Param "ShowReadingTime") -}}
+{{- $scratch.Add "meta" (slice (printf "<span>%s</span>" (i18n "read_time" .ReadingTime | default (printf "%d min" .ReadingTime)))) }}
+{{- end }}
+
+{{- if (.Param "ShowWordCount") -}}
+{{- $scratch.Add "meta" (slice (printf "<span>%s</span>" (i18n "words" .WordCount | default (printf "%d words" .WordCount)))) }}
+{{- end }}
+
+{{- if not (.Param "hideAuthor") -}}
+{{- with (partial "author.html" .) }}
+{{- $scratch.Add "meta" (slice (printf "<span>%s</span>" .)) }}
+{{- end }}
+{{- end }}
+
+{{- with .Params.categories }}
+{{- $capitalizedCategories := slice }}
+{{- range . }}
+{{- $capitalizedCategories = $capitalizedCategories | append (title .) }}
+{{- end }}
+{{- $scratch.Add "meta" (slice (printf "<span>%s</span>" (delimit $capitalizedCategories ", "))) }}
+{{- end }}
+
+{{- with .Params.publications }}
+{{- $publications := slice }}
+{{- range . }}
+{{- $logoHTML := "" }}
+{{- if .logo }}
+{{- if hasPrefix .logo "<svg" }}
+{{- $svgWithSize := replaceRE `(<svg[^>]*)(>)` "${1} width='16' height='16'${2}" .logo }}
+{{- $logoHTML = printf "<span class='publication-logo publication-logo-medium'>%s</span>" $svgWithSize }}
+{{- else }}
+{{- $lightLogoHTML := "" }}
+{{- $darkLogoHTML := "" }}
+{{- $logoResource := $.Resources.GetMatch .logo }}
+{{- if $logoResource }}
+{{- $lightLogoHTML = printf "<img src='%s' alt='' height='16' width='16' class='publication-logo-light'>" $logoResource.RelPermalink }}
+{{- else }}
+{{- $lightLogoHTML = printf "<img src='%s' alt='' height='16' width='16' class='publication-logo-light'>" (.logo | absURL) }}
+{{- end }}
+{{- if .logoDark }}
+{{- $darkLogoResource := $.Resources.GetMatch .logoDark }}
+{{- if $darkLogoResource }}
+{{- $darkLogoHTML = printf "<img src='%s' alt='' height='16' width='16' class='publication-logo-dark'>" $darkLogoResource.RelPermalink }}
+{{- else }}
+{{- $darkLogoHTML = printf "<img src='%s' alt='' height='16' width='16' class='publication-logo-dark'>" (.logoDark | absURL) }}
+{{- end }}
+{{- end }}
+{{- if $darkLogoHTML }}
+{{- $logoHTML = printf "<span class='publication-logo publication-logo-medium'>%s%s</span>" $lightLogoHTML $darkLogoHTML }}
+{{- else }}
+{{- $logoHTML = printf "<span class='publication-logo publication-logo-medium'>%s</span>" $lightLogoHTML }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if .url }}
+{{- $publications = $publications | append (printf "%s<a href='%s' rel='noopener noreferrer' target='_blank'>%s</a>" $logoHTML .url .title) }}
+{{- else }}
+{{- $publications = $publications | append (printf "%s%s" $logoHTML .title) }}
+{{- end }}
+{{- end }}
+{{- if gt (len $publications) 0 }}
+{{- $prefix := default "published on" ($.Param "publicationsPrefix") }}
+{{- $scratch.Add "meta" (slice (printf "%s %s" $prefix (delimit $publications ", "))) }}
+{{- end }}
+{{- end }}
+
+
+
+{{- with ($scratch.Get "meta") }}
+{{- delimit . "&nbsp;·&nbsp;" | safeHTML -}}
+{{- end -}}

@@ -1,0 +1,6 @@
+{{- /* Head custom content area start */ -}}
+{{- $publicationLogosCSS := resources.Get "css/publication-logos.css" | minify }}
+<link rel="stylesheet" href="{{ $publicationLogosCSS.RelPermalink }}">
+{{- $alertsCSS := resources.Get "css/alerts.css" | minify }}
+<link rel="stylesheet" href="{{ $alertsCSS.RelPermalink }}">
+{{- /* Head custom content area end */ -}}

@@ -1,0 +1,146 @@
+baseURL: https://svrnm.com/
+languageCode: en-us
+title: "svrnm :: Severin Neumann"
+theme: PaperMod
+pagination:
+  pagerSize: 10
+
+enableEmoji: true
+
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+
+# googleAnalytics: UA-123-45
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON # necessary for search
+
+minify:
+  disableXML: true
+  minifyOutput: true
+
+params:
+  env: production # to enable google analytics, opengraph, twitter-cards and schema.
+  title: svrnm
+  description: "Severin Neumann's blog"
+  keywords:
+    - "Severin"
+    - "Neumann"
+    - "svrnm"
+    - "observability"
+    - "open source"
+  author: "Severin Neumann"
+  # images: ["<link or path of image for opengraph, twitter-cards>"]
+  DateFormat: "2006-01-02"
+  defaultTheme: auto # dark, light
+  disableThemeToggle: false
+
+  showReadingTime: false
+  ShowShareButtons: false
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowWordCount: false
+  ShowRssButtonInSectionTermList: true
+  UseHugoToc: true
+  disableSpecial1stPost: false
+  disableScrollToTop: false
+  comments: false
+  hidemeta: false
+  hideSummary: false
+  showtoc: false
+  tocopen: false
+
+  # assets:
+    # disableHLJS: true # to disable highlight.js
+    # disableFingerprinting: true
+    # favicon: "<link / abs url>"
+    # favicon16x16: "<link / abs url>"
+    # favicon32x32: "<link / abs url>"
+    # apple_touch_icon: "<link / abs url>"
+    # safari_pinned_tab: "<link / abs url>"
+
+  label:
+    text: "svrnm :: Severin Neumann"
+    icon: /apple-touch-icon.png
+    iconHeight: 35
+
+  # home-info mode
+  homeInfoParams:
+    Title: "Hi, I am Severin :wave:"
+    Content: On this blog you will find my thoughts on [observability](/tags/observability), [OpenTelemetry](/tags/opentelemetry), [open source](/tags/open-source) and other topics. All content is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0).
+
+  socialIcons:
+    - name: github
+      url: "https://github.com/svrnm"
+    - name: linkedin
+      url: "https://www.linkedin.com/in/severinneumann"
+    - name: bluesky
+      url: "https://bsky.app/profile/svrnm.com"
+  #analytics:
+    # google:
+    #   SiteVerificationTag: "XYZabc"
+    # bing:
+    #   SiteVerificationTag: "XYZabc"
+    # yandex:
+    #   SiteVerificationTag: "XYZabc"
+
+  cover:
+    hidden: false # hide everywhere but not in structured data
+    hiddenInList: true # hide on list pages and home
+    hiddenInSingle: false # hide on single page
+
+  editPost:
+    URL: "https://github.com/svrnm/svrnm.com/content"
+    Text: "Suggest Changes" # edit text
+    appendFilePath: true # to append file path to Edit link
+
+  # for search
+  # https://fusejs.io/api/options.html
+  fuseOpts:
+    isCaseSensitive: false
+    shouldSort: true
+    location: 0
+    distance: 1000
+    threshold: 0.4
+    minMatchCharLength: 0
+    limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
+    keys: ["title", "permalink", "summary", "content"]
+  mainSections:
+    - blog
+menu:
+  main:
+    - identifier: home
+      name: Home
+      url: /
+      weight: 10
+    - identifier: blog
+      name: Blog
+      url: /blog/
+      weight: 20
+    - identifier: publications
+      name: Publications
+      url: /publications/
+      weight: 30
+    - identifier: videos
+      name: Videos
+      url: /videos/
+      weight: 40
+    - identifier: about
+      name: About
+      url: /about/
+      weight: 900
+# Read: https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#using-hugos-syntax-highlighter-chroma
+pygmentsUseClasses: true
+markup:
+  highlight:
+    noClasses: false
+  goldmark:
+    parser:
+      attribute:
+        block: true

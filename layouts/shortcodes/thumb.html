@@ -1,0 +1,22 @@
+{{/* layouts/shortcodes/thumb.html */}}
+{{- $src := .Get "src" -}}
+{{- $alt := .Get "alt" | default "" -}}
+{{- $width := .Get "width" | default "600" -}}
+
+{{- $img := .Page.Resources.GetMatch $src -}}
+{{- if not $img -}}
+  {{ errorf "thumb shortcode: can't find %q in page resources" $src }}
+{{- end -}}
+
+{{- $thumb := $img.Resize (printf "%sx webp q80" $width) -}}
+
+<a href="{{ $img.RelPermalink }}" target="_blank" rel="noopener noreferrer">
+  <img
+    src="{{ $thumb.RelPermalink }}"
+    width="{{ $thumb.Width }}"
+    height="{{ $thumb.Height }}"
+    alt="{{ $alt }}"
+    loading="lazy"
+    decoding="async"
+  >
+</a>

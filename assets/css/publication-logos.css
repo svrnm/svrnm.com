@@ -1,0 +1,64 @@
+.publication-logo {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.publication-logo-small svg,
+.publication-logo-small img {
+    height: 12px;
+    width: 12px;
+    vertical-align: middle;
+}
+
+.publication-logo-medium svg,
+.publication-logo-medium img {
+    height: 16px;
+    width: 16px;
+    vertical-align: middle;
+}
+
+.publication-logo-large svg,
+.publication-logo-large img {
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+}
+
+.publication-logo svg {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.publication-logo-light {
+    display: inline-block;
+}
+
+.publication-logo-dark {
+    display: none;
+}
+
+.publication-logo:has(.publication-logo-dark) .publication-logo-light {
+    display: inline-block;
+}
+
+.publication-logo:has(.publication-logo-dark) .publication-logo-dark {
+    display: none;
+}
+
+[data-theme="dark"] .publication-logo:has(.publication-logo-dark) .publication-logo-light {
+    display: none;
+}
+
+[data-theme="dark"] .publication-logo:has(.publication-logo-dark) .publication-logo-dark {
+    display: inline-block;
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-theme="auto"] .publication-logo:has(.publication-logo-dark) .publication-logo-light {
+        display: none;
+    }
+    [data-theme="auto"] .publication-logo:has(.publication-logo-dark) .publication-logo-dark {
+        display: inline-block;
+    }
+}

@@ -1,16 +1,16 @@
 ---
 title: Splitting out a monolith into multiple services in OpenTelemetry
 cover:
-    image: "jaeger-architecture-view.png"
-    alt: "A screenshot from jaeger that shows the monolith as three separate services: checkout, cart, catalog"
-    caption: "The monolith is represented by three services: checkout, cart, catalog"
-    relative: true
+  image: "jaeger-architecture-view.png"
+  alt: "A screenshot from jaeger that shows the monolith as three separate services: checkout, cart, catalog"
+  caption: "The monolith is represented by three services: checkout, cart, catalog"
+  relative: true
 date: 2025-11-25
 categories:
-    - blog
-tags: 
-    - observability
-    - opentelemetry
+  - blog
+tags:
+  - observability
+  - opentelemetry
 ---
 
 I did an experiment on splitting out a monolithic application into multiple "virtual services" in OpenTelemetry to have modules visualized independently on service maps.

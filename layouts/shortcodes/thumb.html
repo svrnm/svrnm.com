@@ -8,15 +8,30 @@
   {{ errorf "thumb shortcode: can't find %q in page resources" $src }}
 {{- end -}}
 
-{{- $thumb := $img.Resize (printf "%sx webp q80" $width) -}}
-
-<a href="{{ $img.RelPermalink }}" target="_blank" rel="noopener noreferrer">
-  <img
-    src="{{ $thumb.RelPermalink }}"
-    width="{{ $thumb.Width }}"
-    height="{{ $thumb.Height }}"
-    alt="{{ $alt }}"
-    loading="lazy"
-    decoding="async"
-  >
-</a>
+{{- $isSVG := eq $img.MediaType.SubType "svg" -}}
+<figure class="align-center">
+{{- if $isSVG -}}
+  {{- /* SVGs don't need resizing, use original */ -}}
+  <a href="{{ $img.RelPermalink }}" target="_blank" rel="noopener noreferrer" style="display: inline-block; box-shadow: none;">
+    <img
+      src="{{ $img.RelPermalink }}"
+      width="{{ $width }}"
+      alt="{{ $alt }}"
+      loading="lazy"
+      decoding="async"
+    >
+  </a>
+{{- else -}}
+  {{- $thumb := $img.Resize (printf "%sx webp q80" $width) -}}
+  <a href="{{ $img.RelPermalink }}" target="_blank" rel="noopener noreferrer" style="display: inline-block; box-shadow: none;">
+    <img
+      src="{{ $thumb.RelPermalink }}"
+      width="{{ $thumb.Width }}"
+      height="{{ $thumb.Height }}"
+      alt="{{ $alt }}"
+      loading="lazy"
+      decoding="async"
+    >
+  </a>
+{{- end -}}
+</figure>

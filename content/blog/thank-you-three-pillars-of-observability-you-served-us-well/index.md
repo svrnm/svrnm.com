@@ -1,16 +1,16 @@
 ---
 title: Thank you, three pillars of Observability. You served us well.
 cover:
-    image: "historical-framing.jpg"
-    alt: "The three pillars of Observability are a historical framing that belongs into a museum"
-    caption: "The observable software universe"
-    relative: true
+  image: "historical-framing.jpg"
+  alt: "The three pillars of Observability are a historical framing that belongs into a museum"
+  caption: "The observable software universe"
+  relative: true
 date: 2025-10-02
 categories:
-    - blog
-tags: 
-    - observability
-    - opentelemetry
+  - blog
+tags:
+  - observability
+  - opentelemetry
 ---
 
 I just read another post introducing traces, metrics, and logs using that analogy, which reminded me to re-share that excellent piece by Ted Young on The New Stack from a few years ago:

@@ -1,6 +1,6 @@
 ---
 title: Blog
 cascade:
-    categories:
-        - blog
+  categories:
+    - blog
 ---

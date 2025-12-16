@@ -1,17 +1,17 @@
 ---
 title: What is context propagation, why do I need it, and what does it have to do with metrics?
 cover:
-    image: "context-propagation-3.png"
-    alt: ""
-    caption: ""
-    relative: true
-    hiddenInSingle: true
+  image: "context-propagation-3.png"
+  alt: ""
+  caption: ""
+  relative: true
+  hiddenInSingle: true
 date: 2025-10-31
 categories:
-    - blog
-tags: 
-    - observability
-    - opentelemetry
+  - blog
+tags:
+  - observability
+  - opentelemetry
 ---
 
 When you’re heads-down in your own area of expertise, it’s easy to forget that what’s obvious to you might not be to others. As you might have seen in previous posts, I learned that for me using pen and paper from time to time helps uncover unknown knowns in my head. Last time, it was [why the three pillars need to go](../thank-you-three-pillars-of-observability-you-served-us-well/). This time, it’s context propagation, and its surprising relationship to metrics.
@@ -22,9 +22,9 @@ Context propagation is often explained in the context of tracing: it’s the mec
 
 Image 1 starts with a basic setup with three services: frontend, product catalog, and cart. Each has metrics like calls per second (CPS) and average response time (ART). Everything looks fine:
 
-* Frontend: 500 CPS, 1500 ms ART
-* Product catalog: 1000 CPS, 500 ms ART
-* Cart: 200 CPS, 200 ms ART
+- Frontend: 500 CPS, 1500 ms ART
+- Product catalog: 1000 CPS, 500 ms ART
+- Cart: 200 CPS, 200 ms ART
 
 Looks healthy enough, right?
 
@@ -33,8 +33,8 @@ Looks healthy enough, right?
 For image 2, let’s map the user journeys (the old APM term: “business transactions”). Users browse products, add them to their cart, and check out.
 The frontend makes calls to the product and cart services to fulfill those interactions. Once we break down the metrics by these interactions, the story changes:
 
-* Product view and Add to cart look fine.
-* Checkout, however, has a 3.9 s ART, hidden by its low CPS of only 50.
+- Product view and Add to cart look fine.
+- Checkout, however, has a 3.9 s ART, hidden by its low CPS of only 50.
 
 Where’s the issue? In the frontend? Or deeper downstream? With the metrics we have right now, we can’t tell.
 

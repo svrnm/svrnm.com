@@ -1,3 +1,19 @@
+/* Regular blockquotes (not alerts) should be italic */
+.post-content blockquote:not(.alert) {
+    font-style: italic;
+}
+
+/* Footnotes styling - smaller and italic */
+.post-content .footnotes {
+    font-size: 0.85em;
+    font-style: italic;
+}
+
+.post-content .footnotes li {
+    font-size: inherit;
+    font-style: inherit;
+}
+
 /* Alert Styles */
 .post-content .alert {
     margin: 20px 0;

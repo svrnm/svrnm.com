@@ -1,0 +1,177 @@
+{{- /* Footer custom content area - Consent popup for analytics */ -}}
+
+<div id="consent-widget">
+  <div id="consent-icon" title="Analytics preferences">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/>
+      <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+      <path d="M12 2v2"/>
+      <path d="M12 20v2"/>
+      <path d="m4.93 4.93 1.41 1.41"/>
+      <path d="m17.66 17.66 1.41 1.41"/>
+      <path d="M2 12h2"/>
+      <path d="M20 12h2"/>
+      <path d="m6.34 17.66-1.41 1.41"/>
+      <path d="m19.07 4.93-1.41 1.41"/>
+    </svg>
+  </div>
+  <div id="consent-popup">
+    <a href="/analytics/" id="consent-link">Allow anonymous analytics?</a>
+    <button id="consent-yes">Yes</button>
+    <button id="consent-no">No</button>
+  </div>
+</div>
+
+<style>
+#consent-widget {
+  position: fixed;
+  bottom: 10px;
+  right: 30px;
+  z-index: 99;
+}
+
+#consent-icon {
+  width: 42px;
+  height: 42px;
+  background: var(--tertiary);
+  border-radius: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--secondary);
+  transition: color 0.2s;
+  filter: drop-shadow(0px 0px 0px var(--theme));
+}
+
+#consent-icon:hover {
+  color: var(--primary);
+}
+
+#consent-popup {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: var(--tertiary);
+  border-radius: 64px;
+  padding: 0.5rem 1rem;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(10px);
+  transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+  color: var(--secondary);
+}
+
+#consent-widget:hover #consent-popup,
+#consent-widget.show-popup #consent-popup {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+#consent-widget:hover #consent-icon,
+#consent-widget.show-popup #consent-icon {
+  opacity: 0;
+  visibility: hidden;
+}
+
+#consent-widget.show-popup #consent-icon {
+  display: none;
+}
+
+#consent-popup button {
+  background: var(--theme);
+  color: var(--secondary);
+  border: none;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  font-size: 12px;
+  transition: color 0.2s;
+}
+
+#consent-popup button:hover {
+  color: var(--primary);
+}
+
+#consent-popup button.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+#consent-link {
+  color: var(--secondary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--secondary);
+}
+
+#consent-link:hover {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+</style>
+
+<script>
+(function() {
+  const CONSENT_KEY = 'analytics-consent';
+  const widget = document.getElementById('consent-widget');
+  const popup = document.getElementById('consent-popup');
+  const yesBtn = document.getElementById('consent-yes');
+  const noBtn = document.getElementById('consent-no');
+
+  function loadAnalytics() {
+    if (document.querySelector('script[data-website-id]')) return;
+    const script = document.createElement('script');
+    script.defer = true;
+    script.src = 'https://cloud.umami.is/script.js';
+    script.dataset.websiteId = '65c59ca4-530d-4b31-b537-4f9985059b4e';
+    document.head.appendChild(script);
+  }
+
+  function removeAnalytics() {
+    const script = document.querySelector('script[data-website-id]');
+    if (script) script.remove();
+  }
+
+  function updateUI(consent) {
+    yesBtn.classList.toggle('active', consent === 'yes');
+    noBtn.classList.toggle('active', consent === 'no');
+    
+    if (consent === null) {
+      widget.classList.add('show-popup');
+    } else {
+      widget.classList.remove('show-popup');
+    }
+  }
+
+  function setConsent(value) {
+    localStorage.setItem(CONSENT_KEY, value);
+    updateUI(value);
+    if (value === 'yes') {
+      loadAnalytics();
+    } else {
+      removeAnalytics();
+    }
+  }
+
+  const consent = localStorage.getItem(CONSENT_KEY);
+  updateUI(consent);
+  
+  if (consent === 'yes') {
+    loadAnalytics();
+  }
+
+  yesBtn.addEventListener('click', function() {
+    setConsent('yes');
+  });
+
+  noBtn.addEventListener('click', function() {
+    setConsent('no');
+  });
+})();
+</script>

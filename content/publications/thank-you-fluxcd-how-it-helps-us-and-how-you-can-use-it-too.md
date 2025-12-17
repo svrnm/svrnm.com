@@ -16,3 +16,4 @@ params:
 The second post in our "thank you" series. FluxCD is what takes "the desired state in git" and makes it true in our clusters, repeatedly. It's the heartbeat behind our weekly releases.
 
 {{< publications >}}
+

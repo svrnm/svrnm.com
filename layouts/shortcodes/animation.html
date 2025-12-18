@@ -1,0 +1,27 @@
+{{/* layouts/shortcodes/animation.html */}}
+{{- $name := .Get "name" -}}
+{{- $parameters := .Get "parameters" | default "{}" -}}
+{{- $width := .Get "width" | default "100%" -}}
+{{- $height := .Get "height" | default "300" -}}
+{{- $alt := .Get "alt" | default (printf "Animation: %s" $name) -}}
+
+{{- if not $name -}}
+  {{ errorf "animation shortcode: 'name' parameter is required" }}
+{{- end -}}
+
+{{- /* Generate a unique ID for this animation instance */ -}}
+{{- $id := printf "animation-%s-%d" $name .Ordinal -}}
+
+<figure class="animation-container align-center" aria-label="{{ $alt }}">
+  <div 
+    id="{{ $id }}"
+    class="animation-canvas-wrapper"
+    data-animation-name="{{ $name }}"
+    data-animation-parameters="{{ $parameters }}"
+    style="width: {{ $width }}; height: {{ $height }}px;"
+  >
+    <noscript>
+      <p class="animation-noscript">JavaScript is required to view this animation.</p>
+    </noscript>
+  </div>
+</figure>

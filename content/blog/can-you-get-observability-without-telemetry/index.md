@@ -5,7 +5,7 @@ cover:
     alt: "Observability without Telemetry?"
     relative: true
     hiddenInSingle: true
-date: 2025-05-19
+date: 2025-12-18
 categories:
     - blog
 tags: 

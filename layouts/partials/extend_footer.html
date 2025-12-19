@@ -1,14 +1,7 @@
 {{- /* Footer custom content area */ -}}
 
-{{- /* Animation loader - include scripts for animation support */ -}}
-<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.min.js" defer></script>
-{{- $animationLoader := resources.Get "js/animation-loader.js" | minify }}
-<script src="{{ $animationLoader.RelPermalink }}" defer></script>
-{{- $animationFiles := resources.Match "js/animations/*.js" -}}
-{{- range $animationFiles -}}
-{{- $minified := . | minify }}
-<script src="{{ $minified.RelPermalink }}" defer></script>
-{{- end -}}
+{{- /* Animation loader scripts (from hugo-animation-loader module) */ -}}
+{{ partial "animation-loader/scripts.html" . }}
 
 {{- /* Consent popup for analytics */ -}}
 <div id="consent-widget">
@@ -186,6 +179,8 @@
   });
 })();
 </script>
+
+
 
 
 

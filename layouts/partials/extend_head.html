@@ -3,6 +3,6 @@
 <link rel="stylesheet" href="{{ $publicationLogosCSS.RelPermalink }}">
 {{- $alertsCSS := resources.Get "css/alerts.css" | minify }}
 <link rel="stylesheet" href="{{ $alertsCSS.RelPermalink }}">
-{{- $animationsCSS := resources.Get "css/animations.css" | minify }}
-<link rel="stylesheet" href="{{ $animationsCSS.RelPermalink }}">
+{{- /* Animation loader CSS (from hugo-animation-loader module) */ -}}
+{{ partial "animation-loader/head.html" . }}
 {{- /* Head custom content area end */ -}}

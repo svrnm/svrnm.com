@@ -2,6 +2,11 @@ baseURL: https://svrnm.com/
 languageCode: en-us
 title: "svrnm :: Severin Neumann"
 theme: PaperMod
+
+module:
+  imports:
+    - path: github.com/svrnm/hugo-animation-loader
+
 pagination:
   pagerSize: 10
 
@@ -27,6 +32,8 @@ minify:
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   title: svrnm
+  animationLoader:
+    roughjs: true # Enable Rough.js for hand-drawn style animations
   description: "Severin Neumann's blog"
   keywords:
     - "Severin"

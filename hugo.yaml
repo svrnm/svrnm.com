@@ -89,6 +89,8 @@ params:
       url: "https://www.linkedin.com/in/severinneumann"
     - name: bluesky
       url: "https://bsky.app/profile/svrnm.com"
+    - name: mastodon
+      url: "https://troet.cafe/@svrnm"
   #analytics:
     # google:
     #   SiteVerificationTag: "XYZabc"

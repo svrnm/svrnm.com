@@ -180,6 +180,11 @@
 })();
 </script>
 
+{{ with resources.Get "js/mermaid-init.js" | minify | fingerprint }}
+<script type="module" src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous"></script>
+{{ end }}
+
+
 
 
 

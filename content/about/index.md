@@ -12,7 +12,7 @@ cover:
 ---
 
 
-I am an [OpenTelemetry](https://opentelemetry.io) maintainer and member of the Governance Committee. I work at [Causely](https://causely.ai), an amazing company that uses [Causal Reasoning to automate service reliability](https://docs.causely.ai/getting-started/how-causely-works/).
+I am an [OpenTelemetry](https://opentelemetry.io) maintainer and member of the Governance Committee. I work at [Bronto](https://bronto.io), an observability company that builds their own data store for fast search and long retention.
 
 You can find me on [LinkedIn](https://www.linkedin.com/in/severinneumann/), [GitHub](https://github.com/svrnm), [BlueSky](https://bsky.app/profile/svrnm.com) and [CNCF Slack](slack.cncf.io) as `@Severin`.
 

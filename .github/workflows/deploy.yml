@@ -55,7 +55,7 @@ jobs:
 
       - name: Setup Pages
         # OpenSSF: Pin to specific version (v5) - for maximum security, pin to full commit SHA
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
         id: pages
 
       - name: Build with Hugo

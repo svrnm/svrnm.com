@@ -80,5 +80,5 @@ jobs:
       - name: Deploy to GitHub Pages
         # OpenSSF: Pin to specific version (v4) - for maximum security, pin to full commit SHA
         # Using OIDC for authentication (OpenSSF: prefer OIDC over PATs)
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
         id: deployment

@@ -1,0 +1,71 @@
+{{- /*
+Embeds a non-16:9 YouTube video (Shorts and other portrait/square clips)
+in a frame matching its real aspect ratio.
+
+Hugo's built-in {{< youtube >}} shortcode is hardcoded to 16:9. The YouTube
+player fills the frame it is given rather than letterboxing, so a mismatched
+frame crops the picture — hence the "ratio" parameter. Pick the ratio the
+video was actually shot in.
+
+    {{< youtubeshort DPcUBnSPQa4 >}}                                    9:16 default
+    {{< youtubeshort DPcUBnSPQa4 "1/1" >}}                              square
+    {{< youtubeshort "https://www.youtube.com/shorts/DPcUBnSPQa4" >}}
+    {{< youtubeshort id="DPcUBnSPQa4" ratio="1/1" title="A title" >}}
+
+Two Hugo rules to know: a pasted URL must be quoted (unquoted args cannot
+contain ":"), and named and positional parameters cannot be mixed — go
+all-positional or all-named.
+
+Frames are sized to a constant height, so a square and a 9:16 clip take up
+the same vertical space in a page.
+*/ -}}
+
+{{- /* --- Video ID: accept a bare ID or any YouTube URL --------------------- */ -}}
+{{- $arg := or (.Get "id") (.Get 0) -}}
+{{- $id := "" -}}
+{{- if not $arg -}}
+  {{- errorf "The %q shortcode requires a YouTube video ID or URL. See %s" .Name .Position -}}
+{{- else if strings.Contains $arg "/" -}}
+  {{- with findRESubmatch `(?:shorts/|embed/|v=|youtu\.be/)([\w-]{11})` $arg 1 -}}
+    {{- $id = index (index . 0) 1 -}}
+  {{- else -}}
+    {{- errorf "The %q shortcode could not find a video ID in the URL %q. See %s" $.Name $arg $.Position -}}
+  {{- end -}}
+{{- else if findRE `^[\w-]{11}$` $arg -}}
+  {{- $id = $arg -}}
+{{- else -}}
+  {{- errorf "The %q shortcode got %q, which is not an 11-character YouTube video ID. See %s" .Name $arg .Position -}}
+{{- end -}}
+
+{{- /* --- Aspect ratio "w/h": frame width derived so height stays constant -- */ -}}
+{{- $ratio := or (.Get "ratio") (.Get 1) "9/16" -}}
+{{- $parts := split $ratio "/" -}}
+{{- $number := `^\s*[0-9]+(\.[0-9]+)?\s*$` -}}
+{{- $w := 0.0 -}}
+{{- $h := 0.0 -}}
+{{- if eq (len $parts) 2 -}}
+  {{- if and (findRE $number (index $parts 0)) (findRE $number (index $parts 1)) -}}
+    {{- $w = float (trim (index $parts 0) " ") -}}
+    {{- $h = float (trim (index $parts 1) " ") -}}
+  {{- end -}}
+{{- end -}}
+{{- if or (le $w 0.0) (le $h 0.0) -}}
+  {{- $id = "" -}}
+  {{- errorf "The %q shortcode needs ratio as \"width/height\" with positive numbers, e.g. \"9/16\" or \"1/1\", got %q. See %s" .Name $ratio .Position -}}
+{{- end -}}
+
+{{- with $id -}}
+{{- $frameHeight := 560 -}}
+{{- $frameWidth := math.Round (mul $frameHeight (div $w $h)) -}}
+{{- $host := cond site.Config.Privacy.YouTube.PrivacyEnhanced "www.youtube-nocookie.com" "www.youtube.com" -}}
+{{- $title := or ($.Get "title") "YouTube video" -}}
+<div class="youtube-short" style="aspect-ratio: {{ $w }} / {{ $h }}; max-width: {{ $frameWidth }}px;">
+  <iframe
+    src="https://{{ $host }}/embed/{{ . }}"
+    loading="lazy"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+    allowfullscreen
+    title="{{ $title }}"></iframe>
+</div>
+{{- end -}}

@@ -1,0 +1,47 @@
+{{- /* Latest publication + latest video highlight block, shown on the home page above the blog list. */ -}}
+{{- $items := slice }}
+{{- with (where site.RegularPages "Section" "publications").ByDate.Reverse }}
+{{- $items = $items | append (dict "page" (index . 0) "label" "Latest publication" "allURL" "/publications/" "allLabel" "All publications") }}
+{{- end }}
+{{- with (where site.RegularPages "Section" "videos").ByDate.Reverse }}
+{{- $items = $items | append (dict "page" (index . 0) "label" "Latest video" "allURL" "/videos/" "allLabel" "All videos") }}
+{{- end }}
+{{- if $items }}
+<section class="latest-highlights" aria-label="Latest publication and video">
+{{- range $items }}
+{{- $label := .label }}
+{{- $allURL := .allURL }}
+{{- $allLabel := .allLabel }}
+{{- $p := .page }}
+{{- $pubs := $p.Params.publications }}
+{{- $pub := false }}
+{{- if $pubs }}{{ $pub = index $pubs 0 }}{{ end }}
+{{- $href := $p.RelPermalink }}
+{{- $external := false }}
+{{- if $pub }}{{ with $pub.url }}{{ $href = . }}{{ $external = true }}{{ end }}{{ end }}
+  <article class="latest-highlight-card">
+    <a class="latest-highlight-link" href="{{ $href }}"{{ if $external }} rel="noopener noreferrer" target="_blank"{{ end }}>
+      <span class="latest-highlight-label">{{ $label }}</span>
+      <span class="latest-highlight-title">{{ $p.Title }}</span>
+    </a>
+    <div class="latest-highlight-meta">
+{{- if $pub }}
+{{- with $pub.logo }}
+{{- if hasPrefix . "<svg" }}
+      <span class="latest-highlight-logo">{{ . | safeHTML }}</span>
+{{- else }}
+      <span class="latest-highlight-logo"><img src="{{ . | relURL }}" alt="" width="16" height="16" loading="lazy"></span>
+{{- end }}
+{{- end }}
+{{- with $pub.title }}
+      <span class="latest-highlight-source">{{ . }}</span>
+      <span class="latest-highlight-sep" aria-hidden="true">·</span>
+{{- end }}
+{{- end }}
+      <time class="latest-highlight-date" datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format "2006-01-02" }}</time>
+    </div>
+    <a class="latest-highlight-all" href="{{ $allURL | relURL }}">{{ $allLabel }} &rarr;</a>
+  </article>
+{{- end }}
+</section>
+{{- end }}

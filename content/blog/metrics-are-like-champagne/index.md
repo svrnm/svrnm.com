@@ -32,4 +32,4 @@ This also explains why [metrics cannot be bestrics](/blog/metrics-are-bestrics/)
 
 So, don't be like me! Only call a metric a metric when it is a metric and not a sparkling roll-up in your backend! I learned my lesson[^1], I hope you did too!
 
-[^1]: Full disclosure: I learned nothing. I didn't update Wikipedia. And until there is an [appellation](https://en.wikipedia.org/wiki/Appellation) system in observability, I'll use "metrics" loosely.
+[^1]: Full disclosure: I learned nothing, and for me a metric and a roll-up at the backend can be used synonymously. I wrote this piece, because this was something I assumed to be general consensus, but it's not! I might be wrong for real, so happy to continue the debate!

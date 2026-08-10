@@ -1,6 +1,6 @@
 ---
 title: "Metrics are like Champagne"
-date: 2026-08-06
+date: 2026-08-10
 draft: false
 cover:
   image: "metrics-are-like-champagne.jpeg"

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Headshots - Severin Neumann</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #fff;
+    --fg: #222;
+    --muted: #666;
+    --border: #e2e2e2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1d1e20;
+      --fg: #eee;
+      --muted: #aaa;
+      --border: #333;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2rem 1rem 4rem;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+  p.intro {
+    color: var(--muted);
+    margin-top: 0;
+    margin-bottom: 2rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  figure {
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  figcaption {
+    padding: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border);
+  }
+  figcaption a {
+    color: inherit;
+    text-decoration: underline;
+  }
+  footer {
+    margin-top: 3rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Headshots</h1>
+  <p class="intro">Full-resolution photos of Severin Neumann, free to use for press, speaker bios, and event listings.</p>
+  <div class="grid">
+    <figure>
+      <img src="/headshots/headshot-1.jpg" alt="Headshot of Severin Neumann, 1" loading="lazy">
+      <figcaption><span>Photo 1</span><a href="/headshots/headshot-1.jpg" download>Download</a></figcaption>
+    </figure>
+    <figure>
+      <img src="/headshots/headshot-2.jpg" alt="Headshot of Severin Neumann, 2" loading="lazy">
+      <figcaption><span>Photo 2</span><a href="/headshots/headshot-2.jpg" download>Download</a></figcaption>
+    </figure>
+    <figure>
+      <img src="/headshots/headshot-3.jpg" alt="Headshot of Severin Neumann, 3" loading="lazy">
+      <figcaption><span>Photo 3</span><a href="/headshots/headshot-3.jpg" download>Download</a></figcaption>
+    </figure>
+    <figure>
+      <img src="/headshots/headshot-4.jpg" alt="Headshot of Severin Neumann, 4" loading="lazy">
+      <figcaption><span>Photo 4</span><a href="/headshots/headshot-4.jpg" download>Download</a></figcaption>
+    </figure>
+  </div>
+  <footer>&copy; Severin Neumann</footer>
+</main>
+</body>
+</html>

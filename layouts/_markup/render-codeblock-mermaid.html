@@ -1,4 +1,12 @@
+{{- if eq .Type "mermaid" -}}
 {{ .Page.Store.Set "hasMermaid" true }}
 <pre class="mermaid">
   {{ .Inner | htmlEscape | safeHTML }}
 </pre>
+{{- else -}}
+{{- /* Hugo 0.146 (pinned in .github/workflows/deploy.yml) also routes fenced
+       blocks without a language through this hook. Render those the way
+       Hugo does by default. */ -}}
+<pre tabindex="0"><code>{{ .Inner | htmlEscape | safeHTML }}
+</code></pre>
+{{- end -}}

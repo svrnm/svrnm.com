@@ -1,0 +1,39 @@
+{{- /*
+Embeds an external page (e.g. a live slide deck) in a responsive iframe,
+framed by a small title bar that marks it as interactive and links to
+the page in a new tab.
+
+    {{< embed src="https://example.com/slides/1" title="Live slides" >}}
+    {{< embed src="https://example.com/slides/1" title="Live slides" hint="Use ← → to navigate" ratio="4/3" >}}
+
+title labels the bar and the iframe, hint is optional extra text in the bar,
+ratio is "width/height" and defaults to 16/9. open is the URL behind
+"Open in new tab" and defaults to src; set it when src carries
+embed-only parameters.
+*/ -}}
+{{- $src := .Get "src" -}}
+{{- if not $src -}}
+  {{- errorf "embed shortcode: src is required. See %s" .Position -}}
+{{- end -}}
+{{- $title := .Get "title" | default "Embedded page" -}}
+{{- $open := .Get "open" | default $src -}}
+{{- $ratio := replace (.Get "ratio" | default "16/9") "/" " / " -}}
+<figure class="media-embed media-embed--live">
+  <div class="media-embed__bar">
+    <span class="media-embed__live" aria-hidden="true"></span>
+    <span class="media-embed__title">{{ $title }}</span>
+    {{- with .Get "hint" }}
+    <span class="media-embed__hint">{{ . }}</span>
+    {{- end }}
+    <a class="media-embed__open" href="{{ $open }}" target="_blank" rel="noopener noreferrer">Open in new tab ↗</a>
+  </div>
+  <div class="media-embed__frame" style="aspect-ratio: {{ $ratio | safeCSS }};">
+    <iframe
+      src="{{ $src }}"
+      loading="lazy"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allow="fullscreen; screen-wake-lock"
+      allowfullscreen
+      title="{{ $title }}"></iframe>
+  </div>
+</figure>

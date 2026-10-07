@@ -7,6 +7,15 @@
 <link rel="stylesheet" href="{{ $latestHighlightsCSS.RelPermalink }}">
 {{- $youtubeShortCSS := resources.Get "css/youtube-short.css" | minify }}
 <link rel="stylesheet" href="{{ $youtubeShortCSS.RelPermalink }}">
+{{- $mediaEmbedCSS := resources.Get "css/media-embed.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $mediaEmbedCSS.RelPermalink }}">
+{{- /* Deck player script, only on pages using {{< deck >}}. Not in
+       extend_footer.html: PaperMod caches the footer across pages. */ -}}
+{{- if .HasShortcode "deck" }}
+{{- with resources.Get "js/deck-player.js" | minify | fingerprint }}
+<script defer src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous"></script>
+{{- end }}
+{{- end }}
 {{- /* Animation loader CSS (from hugo-animation-loader module) */ -}}
 {{ partial "animation-loader/head.html" . }}
 {{- /* Head custom content area end */ -}}

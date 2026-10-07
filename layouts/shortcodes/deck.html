@@ -2,6 +2,7 @@
 Shows a slide deck and a video of it in one frame, with a switch so the
 reader can either click through the live slides or watch the recording.
 
+    {{< deck slides="https://example.com/slides/1?embedded=true" >}}
     {{< deck slides="https://example.com/slides/1?embedded=true" video="walkthrough.mp4" >}}
     {{< deck slides="https://example.com/slides/1?embedded=true" open="https://example.com/slides/1"
              video="walkthrough.mp4" poster="poster.jpg" title="My deck" default="video" >}}
@@ -9,7 +10,8 @@ reader can either click through the live slides or watch the recording.
 slides  URL of the live deck, shown in an iframe
 open    URL behind "Open slides" (defaults to slides); set it when slides
         carries embed-only parameters
-video   video file in the page bundle; poster is an optional image from it
+video   optional video file in the page bundle; without it only the slides
+        are shown, with no switch. poster is an optional image for the video
 default which view shows first: "slides" (default) or "video"
 hint    text shown next to the switch in the slides view
 
@@ -22,12 +24,18 @@ layouts/partials/extend_head.html on pages that use this shortcode.
 {{- if not $slides -}}
   {{- errorf "deck shortcode: slides is required. See %s" .Position -}}
 {{- end -}}
-{{- $video := .Page.Resources.GetMatch (.Get "video") -}}
-{{- if not $video -}}
-  {{- errorf "deck shortcode: can't find video %q in page resources. See %s" (.Get "video") .Position -}}
+{{- $video := false -}}
+{{- with .Get "video" -}}
+  {{- $video = $.Page.Resources.GetMatch . -}}
+  {{- if not $video -}}
+    {{- errorf "deck shortcode: can't find video %q in page resources. See %s" . $.Position -}}
+  {{- end -}}
 {{- end -}}
 {{- $poster := "" -}}
 {{- with .Get "poster" -}}
+  {{- if not $video -}}
+    {{- warnf "deck shortcode: poster %q is ignored without a video. See %s" . $.Position -}}
+  {{- end -}}
   {{- with $.Page.Resources.GetMatch . -}}
     {{- $poster = .RelPermalink -}}
   {{- else -}}
@@ -38,20 +46,25 @@ layouts/partials/extend_head.html on pages that use this shortcode.
 {{- $title := .Get "title" | default "Slides" -}}
 {{- $hint := .Get "hint" | default "click, then use ← → to step through" -}}
 {{- $view := .Get "default" | default "slides" -}}
+{{- if not $video -}}
+  {{- $view = "slides" -}}
+{{- end -}}
 {{- if not (in (slice "slides" "video") $view) -}}
   {{- errorf "deck shortcode: default must be \"slides\" or \"video\", got %q. See %s" $view .Position -}}
 {{- end -}}
 {{- $id := printf "deck-%d" .Ordinal -}}
 <figure class="media-embed media-embed--live deck-player" data-view="{{ $view }}" aria-label="{{ $title }}">
   <div class="media-embed__bar">
+    {{- if $video }}
     <div class="deck-player__switch" role="tablist" aria-label="Choose how to view {{ $title }}" hidden>
       <button type="button" role="tab" data-view="slides" aria-controls="{{ $id }}-slides">Click through</button>
       <button type="button" role="tab" data-view="video" aria-controls="{{ $id }}-video">▶ Watch video</button>
     </div>
+    {{- end }}
     <span class="media-embed__hint deck-player__hint">{{ $hint }}</span>
     <a class="media-embed__open" href="{{ $open }}" target="_blank" rel="noopener noreferrer">Open slides ↗</a>
   </div>
-  <div class="media-embed__frame deck-player__panel" id="{{ $id }}-slides" data-panel="slides" role="tabpanel" style="aspect-ratio: 16 / 9;">
+  <div class="media-embed__frame deck-player__panel" id="{{ $id }}-slides" data-panel="slides"{{ if $video }} role="tabpanel"{{ end }} style="aspect-ratio: 16 / 9;">
     <iframe
       {{ if eq $view "slides" }}src{{ else }}data-src{{ end }}="{{ $slides }}"
       loading="lazy"
@@ -60,12 +73,14 @@ layouts/partials/extend_head.html on pages that use this shortcode.
       allowfullscreen
       title="{{ $title }}: live slides"></iframe>
   </div>
+  {{- with $video }}
   <div class="deck-player__panel" id="{{ $id }}-video" data-panel="video" role="tabpanel">
     <video controls playsinline muted preload="none"
       {{- with $poster }} poster="{{ . }}"{{ end }}
       title="{{ $title }}: video walkthrough">
-      <source src="{{ $video.RelPermalink }}" type="{{ $video.MediaType.Type }}">
-      <a href="{{ $video.RelPermalink }}">Download the video</a>
+      <source src="{{ .RelPermalink }}" type="{{ .MediaType.Type }}">
+      <a href="{{ .RelPermalink }}">Download the video</a>
     </video>
   </div>
+  {{- end }}
 </figure>

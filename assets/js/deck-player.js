@@ -5,6 +5,8 @@
     var buttons = player.querySelectorAll('.deck-player__switch [data-view]');
     var iframe = player.querySelector('[data-panel="slides"] iframe');
     var video = player.querySelector('[data-panel="video"] video');
+    // Slides-only deck: nothing to switch.
+    if (!video) return;
 
     function show(view, fromUser) {
       player.dataset.view = view;

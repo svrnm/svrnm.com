@@ -1,0 +1,118 @@
+/* Video files and iframes — see layouts/shortcodes/video.html and embed.html. */
+.media-embed {
+    width: 100%;
+    margin: 1rem 0;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--tertiary);
+}
+
+.media-embed video {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Live iframe: a window-like frame with a title bar, so it reads as
+   something you can interact with rather than a static image. */
+.media-embed--live {
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.media-embed__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.6rem;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.media-embed__live {
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #2ea043;
+    box-shadow: 0 0 0 3px rgba(46, 160, 67, 0.2);
+}
+
+.media-embed__title {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.media-embed__open {
+    margin-left: auto;
+    color: var(--primary);
+    white-space: nowrap;
+    box-shadow: none;
+}
+
+.media-embed__open:hover {
+    text-decoration: underline;
+}
+
+.media-embed__frame {
+    position: relative;
+    width: 100%;
+    background: var(--theme);
+}
+
+.media-embed__frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* Deck player: slides and video in one frame, see layouts/shortcodes/deck.html.
+   Until the script marks the player ready, both panels stay visible. */
+.deck-player__switch {
+    display: inline-flex;
+    padding: 2px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--code-bg);
+}
+
+.deck-player__switch[hidden] {
+    display: none;
+}
+
+.deck-player__switch button {
+    padding: 0.15rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--secondary);
+    background: transparent;
+    cursor: pointer;
+}
+
+.deck-player__switch button:hover {
+    color: var(--primary);
+}
+
+.deck-player__switch button[aria-selected="true"] {
+    color: var(--primary);
+    font-weight: 600;
+    background: var(--theme);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.deck-player__panel video {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.deck-player.is-ready[data-view="slides"] [data-panel="video"],
+.deck-player.is-ready[data-view="video"] [data-panel="slides"],
+.deck-player.is-ready[data-view="video"] .deck-player__hint {
+    display: none;
+}

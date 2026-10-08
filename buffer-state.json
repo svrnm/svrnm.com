@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "initializedAt": "2026-10-08T18:49:47.906Z",
+  "channels": [
+    {
+      "id": "6ac7d93f6a5c39ccb654259d",
+      "name": "severinneumann",
+      "service": "linkedin",
+      "organizationId": "66d856f1d6fa823060e8fa59",
+      "isDisconnected": false,
+      "isLocked": false
+    },
+    {
+      "id": "66d8570cca3dab3e0a40b4c4",
+      "name": "svrnm",
+      "service": "mastodon",
+      "organizationId": "66d856f1d6fa823060e8fa59",
+      "isDisconnected": false,
+      "isLocked": false
+    },
+    {
+      "id": "6ac7d96f6a5c39ccb65426f5",
+      "name": "Severin Neumann",
+      "service": "bluesky",
+      "organizationId": "66d856f1d6fa823060e8fa59",
+      "isDisconnected": false,
+      "isLocked": false
+    }
+  ],
+  "posts": {
+    "https://svrnm.com/blog/creating-interactive-slides-with-llms-slidev-and-roughjs/": {
+      "title": "Creating interactive slides with LLMs, Slidev and Rough.js",
+      "baseline": true,
+      "submissions": {}
+    },
+    "https://svrnm.com/blog/metrics-are-like-champagne/": {
+      "title": "Metrics are like Champagne",
+      "baseline": true,
+      "submissions": {}
+    },
+    "https://svrnm.com/blog/dear-first-time-contributor/": {
+      "title": "Dear first-time contributor",
+      "baseline": true,
+      "submissions": {}
+    },
+    "https://svrnm.com/blog/observability-is-an-infinite-game-not-a-war/": {
+      "title": "Observability is an infinite game, not a war.",
+      "baseline": true,
+      "submissions": {}
+    },
+    "https://svrnm.com/blog/humans.md/": {
+      "title": "No need for HUMANS.md",
+      "baseline": true,
+      "submissions": {}
+    },
+    "https://svrnm.com/blog/adjusting-load-generators-for-realistic-traffic-simulation/": {
+      "title": "Adjusting load generators for realistic traffic simulation",
+      "baseline": true,
+      "submissions": {}
+    },
+    "https://svrnm.com/blog/metrics-are-bestrics/": {
+      "title": "Are metrics the bestrics?",
+      "baseline": true,
+      "submissions": {}
+    },
+    "https://svrnm.com/blog/can-you-get-observability-without-telemetry/": {
+      "title": "Can you get Observability without Telemetry?",
+      "baseline": true,
+      "submissions": {}
+    },
+    "https://svrnm.com/blog/splitting-out-a-monolith-into-multiple-services-in-opentelemetry/": {
+      "title": "Splitting out a monolith into multiple services in OpenTelemetry",
+      "baseline": true,
+      "submissions": {}
+    },
+    "https://svrnm.com/blog/what-is-contaxt-propagation-why-do-i-need-it/": {
+      "title": "What is context propagation, why do I need it, and what does it have to do with metrics?",
+      "baseline": true,
+      "submissions": {}
+    },
+    "https://svrnm.com/blog/thank-you-three-pillars-of-observability-you-served-us-well/": {
+      "title": "Thank you, three pillars of Observability. You served us well.",
+      "baseline": true,
+      "submissions": {}
+    },
+    "https://svrnm.com/blog/expand-the-observable-universe/": {
+      "title": "Expanding the observable universe",
+      "baseline": true,
+      "submissions": {}
+    }
+  }
+}

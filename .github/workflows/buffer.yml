@@ -1,0 +1,53 @@
+name: Blog posts to Buffer
+
+on:
+  workflow_run:
+    workflows: [Deploy Hugo site to GitHub Pages]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+# Serialize receipt updates, including scheduled checks. Never cancel a submission.
+concurrency:
+  group: buffer-blog
+  cancel-in-progress: false
+
+jobs:
+  buffer:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download deployed blog manifest
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: blog-manifest
+          path: buffer-input
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+      - name: Submit drafts or check publication status
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BUFFER_MODE: ${{ vars.BUFFER_MODE || 'draft' }}
+          BUFFER_CHANNEL_IDS: ${{ vars.BUFFER_CHANNEL_IDS }}
+          BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
+          BUFFER_COMMAND: ${{ github.event_name == 'workflow_run' && 'submit' || 'check' }}
+        run: node scripts/buffer.mjs "$BUFFER_COMMAND" buffer-input/blog-manifest.json

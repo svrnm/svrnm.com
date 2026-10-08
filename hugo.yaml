@@ -19,11 +19,19 @@ buildExpired: false
 
 # googleAnalytics: UA-123-45
 
+outputFormats:
+  BlogManifest:
+    mediaType: application/json
+    baseName: blog-manifest
+    isPlainText: true
+    notAlternative: true
+
 outputs:
   home:
     - HTML
     - RSS
     - JSON # necessary for search
+    - BlogManifest
 
 minify:
   disableXML: true

@@ -53,6 +53,14 @@ jobs:
           hugo-version: ${{ env.HUGO_VERSION }}
           extended: true
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Test Buffer workflow
+        run: node --test tests/buffer.test.mjs
+
       - name: Setup Pages
         # OpenSSF: Pin to specific version (v5) - for maximum security, pin to full commit SHA
         uses: actions/configure-pages@v6
@@ -63,6 +71,13 @@ jobs:
           hugo \
             --minify \
             --baseURL ${{ steps.pages.outputs.base_url }}
+
+      - name: Upload blog manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: blog-manifest
+          path: public/blog-manifest.json
+          if-no-files-found: error
 
       - name: Upload artifact
         # OpenSSF: Pin to specific version (v3) - for maximum security, pin to full commit SHA

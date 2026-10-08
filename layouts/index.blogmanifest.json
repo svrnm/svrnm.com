@@ -1,0 +1,6 @@
+{{- $posts := slice -}}
+{{- range where site.RegularPages "Section" "blog" -}}
+  {{- $social := .Params.social | default dict -}}
+  {{- $posts = $posts | append (dict "title" .Title "url" .Permalink "text" ($social.text | default .Title) "skip" ($social.skip | default false)) -}}
+{{- end -}}
+{{- dict "version" 1 "posts" $posts | jsonify -}}

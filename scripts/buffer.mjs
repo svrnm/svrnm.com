@@ -14,6 +14,8 @@ export function validateManifest(manifest) {
     if (url.origin !== 'https://svrnm.com' || !post.title || typeof post.text !== 'string' || typeof post.skip !== 'boolean' || urls.has(post.url)) {
       throw new Error('Invalid or duplicate blog manifest entry');
     }
+    if (post.description !== undefined && typeof post.description !== 'string') throw new Error('Invalid preview description');
+    if (post.image && !['http:', 'https:'].includes(new URL(post.image).protocol)) throw new Error('Invalid preview image URL');
     urls.add(post.url);
   }
   return manifest.posts;
@@ -33,6 +35,19 @@ export function selectChannels(channels, ids = '') {
 
 export function announcement(post) {
   return `${post.text.trim()}\n\n${post.url}`;
+}
+
+export function linkMetadata(channel, post) {
+  const service = channel.service.toLowerCase();
+  const metadata = {};
+  if (['linkedin', 'bluesky'].includes(service)) {
+    if (!post?.url) throw new Error('Missing article URL for link preview');
+    const linkAttachment = { url: post.url, title: post.title };
+    if (post.description) linkAttachment.description = post.description;
+    if (post.image) linkAttachment.thumbnail = { url: post.image };
+    metadata[service] = { linkAttachment };
+  }
+  return metadata;
 }
 
 export class BufferClient {
@@ -59,19 +74,30 @@ export class BufferClient {
     }
     return channels;
   }
-  async create(channel, text, mode) {
+  async create(channel, text, mode, post) {
+    const metadata = linkMetadata(channel, post);
     const { createPost } = await this.query(`mutation Create($input: CreatePostInput!) {
       createPost(input: $input) {
         __typename
         ... on PostActionSuccess { post { id status dueAt } }
         ... on MutationError { message }
       }
-    }`, { input: { channelId: channel.id, text, schedulingType: 'automatic', mode: 'addToQueue', saveToDraft: mode === 'draft', needsApproval: false, assets: [] } });
+    }`, { input: { channelId: channel.id, text, schedulingType: 'automatic', mode: 'addToQueue', saveToDraft: mode === 'draft', needsApproval: false, assets: [], metadata } });
     if (!createPost.post?.id) throw new Error(createPost.message || 'Buffer returned no post receipt');
     return createPost.post;
   }
+  async editPreview(id, channel, post) {
+    const { editPost } = await this.query(`mutation Preview($input: EditPostInput!) {
+      editPost(input: $input) {
+        ... on PostActionSuccess { post { id status dueAt } }
+        ... on MutationError { message }
+      }
+    }`, { input: { id, metadata: linkMetadata(channel, post) } });
+    if (!editPost.post?.id) throw new Error(editPost.message || 'Buffer returned no updated post');
+    return editPost.post;
+  }
   async post(id) {
-    const data = await this.query('query Post($input: PostInput!) { post(input: $input) { id status dueAt sentAt externalLink error { message } } }', { input: { id } });
+    const data = await this.query('query Post($input: PostInput!) { post(input: $input) { id channelId status dueAt sentAt externalLink error { message } } }', { input: { id } });
     return data.post;
   }
 }
@@ -157,7 +183,7 @@ export async function submit({ posts, state, channels, mode = 'draft', store, bu
       await store.save(state);
       let receipt;
       try {
-        receipt = await buffer.create(channel, announcement(post), mode);
+        receipt = await buffer.create(channel, announcement(post), mode, post);
       } catch (error) {
         failures.push(`${post.url} on ${channel.service}: ${error.message}. Attempt remains unconfirmed; review Buffer before retrying.`);
         continue;
@@ -200,9 +226,36 @@ export async function check({ state, store, buffer, log = console.log }) {
   if (failures.length) throw new Error(failures.join('\n'));
 }
 
+export async function refreshPreviews({ posts, url, state, store, buffer, log = console.log }) {
+  const post = posts.find(post => post.url === url);
+  const entry = state?.posts[url];
+  if (!post || !entry) throw new Error('Refresh URL must identify a published blog with saved Buffer receipts');
+  const failures = [];
+  for (const [channelId, receipt] of Object.entries(entry.submissions)) {
+    if (!receipt.id) { failures.push(`Unconfirmed ${receipt.service} receipt; reconcile before refreshing`); continue; }
+    if (!['linkedin', 'bluesky'].includes(receipt.service)) {
+      log(`${receipt.service}: preview comes from the deployed page metadata; no attachment update needed.`);
+      continue;
+    }
+    try {
+      const current = await buffer.post(receipt.id);
+      if (current.channelId !== channelId) throw new Error('Receipt channel does not match Buffer post');
+      if (current.status !== 'draft') {
+        log(`Skipped ${receipt.service} ${receipt.id}: status is ${current.status}, not draft.`);
+        continue;
+      }
+      await buffer.editPreview(receipt.id, { id: channelId, service: receipt.service }, post);
+      receipt.previewUpdatedAt = now();
+      log(`Updated ${receipt.service} link preview on existing draft ${receipt.id}.`);
+    } catch (error) { failures.push(`${receipt.service}: ${error.message}`); }
+  }
+  await store.save(state);
+  if (failures.length) throw new Error(failures.join('\n'));
+}
+
 async function main() {
   const [command, manifestPath] = process.argv.slice(2);
-  if (!['submit', 'check'].includes(command)) throw new Error('Usage: node scripts/buffer.mjs submit <manifest> | check');
+  if (!['submit', 'check', 'refresh'].includes(command)) throw new Error('Usage: node scripts/buffer.mjs submit <manifest> | check | refresh');
   for (const key of ['BUFFER_API_KEY', 'GITHUB_TOKEN', 'GITHUB_REPOSITORY']) {
     if (!process.env[key]) throw new Error(`Missing ${key}`);
   }
@@ -219,6 +272,12 @@ async function main() {
       const channels = selectChannels(available, process.env.BUFFER_CHANNEL_IDS);
       for (const channel of channels) log(`Target: ${channel.service} ${channel.name} (${channel.id})`);
       await submit({ posts, state, channels, mode: process.env.BUFFER_MODE || 'draft', store, buffer, log });
+    } else if (command === 'refresh') {
+      const response = await fetch('https://svrnm.com/blog-manifest.json', { signal: AbortSignal.timeout(30_000) });
+      if (!response.ok) throw new Error(`Deployed manifest HTTP ${response.status}`);
+      const posts = validateManifest(await response.json());
+      if (posts.some(post => !post.image)) throw new Error('Deploy the preview-enabled manifest before refreshing drafts');
+      await refreshPreviews({ posts, url: process.env.BUFFER_REFRESH_URL, state, store, buffer, log });
     } else {
       await check({ state, store, buffer, log });
     }

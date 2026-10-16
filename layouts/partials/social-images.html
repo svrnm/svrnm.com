@@ -1,0 +1,39 @@
+{{- /* Shared by page metadata and the Buffer manifest. Prefer editorial images. */ -}}
+{{- $imgs := slice -}}
+{{- if .Params.cover.image -}}
+  {{- $url := .Params.cover.image | absURL -}}
+  {{- if eq .Params.cover.relative true -}}
+    {{- $url = (path.Join .RelPermalink .Params.cover.image) | absURL -}}
+  {{- end -}}
+  {{- $imgs = $imgs | append (dict "Permalink" $url "RelPermalink" $url) -}}
+{{- else -}}
+  {{- $imgParams := .Params.images -}}
+  {{- $resources := .Resources.ByType "image" -}}
+  {{- if not $imgParams -}}
+    {{- $featured := $resources.GetMatch "*feature*" -}}
+    {{- if not $featured -}}{{- $featured = $resources.GetMatch "{*cover*,*thumbnail*}" -}}{{- end -}}
+    {{- with $featured -}}
+      {{- $imgs = $imgs | append (dict "Permalink" .Permalink "RelPermalink" .RelPermalink) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if and (not $imgParams) (not $imgs) -}}
+    {{- with site.Params.images -}}{{- $imgParams = first 1 . -}}{{- end -}}
+  {{- end -}}
+  {{- range $imgParams -}}
+    {{- $url := . | absURL -}}
+    {{- with $resources.GetMatch . -}}{{- $url = .Permalink -}}{{- end -}}
+    {{- $imgs = $imgs | append (dict "Permalink" $url "RelPermalink" $url) -}}
+  {{- end -}}
+{{- end -}}
+{{- if and (not $imgs) .IsPage (eq .Section "blog") -}}
+  {{- $base := resources.Get "images/social-card-base.png" -}}
+  {{- $domain := (urls.Parse site.BaseURL).Host -}}
+  {{- $title := .Title | plainify | htmlUnescape | truncate 130 -}}
+  {{- $card := $base.Filter
+    (images.Text $domain (dict "color" "#68d6bd" "size" 38 "x" 80 "y" 65))
+    (images.Text $title (dict "color" "#f1f1f1" "size" 58 "linespacing" 14 "x" 80 "y" 205))
+    (images.Text "Blog" (dict "color" "#a0a0a0" "size" 26 "x" 80 "y" 555))
+  -}}
+  {{- $imgs = $imgs | append (dict "Permalink" $card.Permalink "RelPermalink" $card.RelPermalink) -}}
+{{- end -}}
+{{- return $imgs -}}

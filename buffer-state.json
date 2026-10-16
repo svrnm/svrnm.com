@@ -95,7 +95,10 @@
           "service": "linkedin",
           "attemptedAt": "2026-10-16T09:32:41.097Z",
           "mode": "draft",
-          "status": "unconfirmed"
+          "status": "draft",
+          "id": "6ad1ef3a9597cd166276c2c1",
+          "dueAt": null,
+          "acceptedAt": "2026-10-16T09:32:42.108Z"
         }
       }
     }

@@ -104,7 +104,10 @@
           "service": "mastodon",
           "attemptedAt": "2026-10-16T09:32:42.999Z",
           "mode": "draft",
-          "status": "unconfirmed"
+          "status": "draft",
+          "id": "6ad1ef3c4ed7d375a4539bf9",
+          "dueAt": null,
+          "acceptedAt": "2026-10-16T09:32:44.178Z"
         }
       }
     }

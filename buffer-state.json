@@ -99,6 +99,12 @@
           "id": "6ad1ef3a9597cd166276c2c1",
           "dueAt": null,
           "acceptedAt": "2026-10-16T09:32:42.108Z"
+        },
+        "66d8570cca3dab3e0a40b4c4": {
+          "service": "mastodon",
+          "attemptedAt": "2026-10-16T09:32:42.999Z",
+          "mode": "draft",
+          "status": "unconfirmed"
         }
       }
     }

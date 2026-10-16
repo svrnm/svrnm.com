@@ -87,6 +87,17 @@
       "title": "Expanding the observable universe",
       "baseline": true,
       "submissions": {}
+    },
+    "https://svrnm.com/blog/sharing-hugo-blog-posts-through-buffer-with-github-actions/": {
+      "title": "Sharing Hugo blog posts through Buffer with GitHub Actions",
+      "submissions": {
+        "6ac7d93f6a5c39ccb654259d": {
+          "service": "linkedin",
+          "attemptedAt": "2026-10-16T09:32:41.097Z",
+          "mode": "draft",
+          "status": "unconfirmed"
+        }
+      }
     }
   }
 }

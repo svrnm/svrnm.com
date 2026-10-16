@@ -95,28 +95,37 @@
           "service": "linkedin",
           "attemptedAt": "2026-10-16T09:32:41.097Z",
           "mode": "draft",
-          "status": "draft",
+          "status": "sent",
           "id": "6ad1ef3a9597cd166276c2c1",
-          "dueAt": null,
-          "acceptedAt": "2026-10-16T09:32:42.108Z"
+          "dueAt": "2026-10-16T09:37:13.790Z",
+          "acceptedAt": "2026-10-16T09:32:42.108Z",
+          "sentAt": "2026-10-16T09:37:14.506Z",
+          "externalLink": "https://www.linkedin.com/feed/update/urn:li:share:7516794373942996992",
+          "checkedAt": "2026-10-16T11:29:39.950Z"
         },
         "66d8570cca3dab3e0a40b4c4": {
           "service": "mastodon",
           "attemptedAt": "2026-10-16T09:32:42.999Z",
           "mode": "draft",
-          "status": "draft",
+          "status": "sent",
           "id": "6ad1ef3c4ed7d375a4539bf9",
-          "dueAt": null,
-          "acceptedAt": "2026-10-16T09:32:44.178Z"
+          "dueAt": "2026-10-16T09:37:35.859Z",
+          "acceptedAt": "2026-10-16T09:32:44.178Z",
+          "sentAt": "2026-10-16T09:37:36.838Z",
+          "externalLink": "https://troet.cafe/@svrnm/117449913566366955",
+          "checkedAt": "2026-10-16T11:29:40.027Z"
         },
         "6ac7d96f6a5c39ccb65426f5": {
           "service": "bluesky",
           "attemptedAt": "2026-10-16T09:32:45.091Z",
           "mode": "draft",
-          "status": "draft",
+          "status": "sent",
           "id": "6ad1ef3ee991a49db3d848c9",
-          "dueAt": null,
-          "acceptedAt": "2026-10-16T09:32:46.212Z"
+          "dueAt": "2026-10-16T09:37:24.060Z",
+          "acceptedAt": "2026-10-16T09:32:46.212Z",
+          "sentAt": "2026-10-16T09:37:24.770Z",
+          "externalLink": "https://bsky.app/profile/did:plc:kcvmlxtgh6y72psns4hacvn4/post/3mxyboqjxcc2q",
+          "checkedAt": "2026-10-16T11:29:40.122Z"
         }
       }
     }

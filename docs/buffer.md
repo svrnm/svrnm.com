@@ -2,6 +2,14 @@
 
 After a successful push deployment to GitHub Pages, `buffer.yml` downloads the
 blog manifest from that exact deployment and creates drafts for new blog posts.
+LinkedIn and Bluesky receive explicit link attachments with the title, description,
+and thumbnail. Mastodon uses the link and the published page metadata.
+
+Image selection follows the page cover, explicit `images`, featured/cover/thumbnail
+resources, and site-wide `images`. Blog posts without any of these get a generated
+1200 × 630 PNG with their title and the site domain. The same image is used by
+Open Graph and Twitter card metadata and the Buffer manifest. It is a social
+preview only; it does not insert a cover into the article body.
 LinkedIn, Mastodon, and Bluesky are the target services. Drafts must be manually
 scheduled or published in Buffer; deploying the site does not publish them.
 
@@ -51,7 +59,7 @@ per-channel attempts, accepted Buffer IDs, status, scheduled time, and—when
 available—publication time and the destination social post URL. Treat this
 branch as durable data: do not delete it to reset the workflow.
 
-Every six hours, and on manual dispatch of the Buffer workflow, saved IDs are
+Every six hours, and on manual dispatch with no refresh URL, saved IDs are
 checked against Buffer. Drafts remain pending until manually scheduled. `sent`
 confirms Buffer reports successful publication. Publishing errors fail the
 workflow and appear in its job summary with the Buffer ID and error message.
@@ -109,3 +117,18 @@ Official API documentation:
 - https://developers.buffer.com/guides/your-first-post.html
 - https://developers.buffer.com/reference.html
 - https://support.buffer.com/en-us/articles/how-to-create-your-buffer-api-key-ShIgYVwM6j
+
+## Refresh existing drafts after enabling previews
+
+Once the preview changes have deployed, open **Actions → Blog posts to Buffer →
+Run workflow** and supply the blog's full canonical URL in `refresh_url`.
+The script reads the deployed manifest and updates link attachments on the saved
+LinkedIn and Bluesky drafts for that URL. It checks their current status and
+channel before editing; scheduled and published posts are skipped. It does not
+create posts, change text, remove media, or schedule drafts. Buffer may reject an
+attachment update if a draft already contains an image added manually; resolve
+that conflict in Buffer. Mastodon relies on the updated page metadata instead.
+
+The URL must match a published blog post with saved Buffer receipts. Leave it
+empty to run the usual publication-status check. Preview-only changes to the
+site do not automatically resend announcements or modify existing drafts.

@@ -1,5 +1,5 @@
 baseURL: https://svrnm.com/
-languageCode: en-us
+locale: en-US
 title: "svrnm :: Severin Neumann"
 theme: PaperMod
 

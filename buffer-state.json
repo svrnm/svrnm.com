@@ -160,6 +160,17 @@
           "acceptedAt": "2026-11-13T08:37:46.335Z"
         }
       }
+    },
+    "https://svrnm.com/blog/balatro-otel/": {
+      "title": "OpenTelemetry for Balatro",
+      "submissions": {
+        "6ac7d93f6a5c39ccb654259d": {
+          "service": "linkedin",
+          "attemptedAt": "2026-11-13T13:52:44.136Z",
+          "mode": "draft",
+          "status": "unconfirmed"
+        }
+      }
     }
   }
 }

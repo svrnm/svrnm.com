@@ -3,7 +3,10 @@ Embeds a video file from the page bundle with the native HTML5 player.
 
     {{< video src="demo.mp4" >}}
     {{< video src="demo.mp4" poster="cover.jpg" title="A walkthrough" >}}
+    {{< video src="demo.mp4" caption="What the clip shows, *Markdown* allowed" >}}
 
+caption is shown below the player; player and caption look like an image
+inserted with the figure shortcode (see .media-embed--video).
 preload="none" keeps the file from downloading until the reader presses play,
 so large recordings don't weigh down the page. The poster is shown until then.
 Videos are muted by default; pass muted="false" for ones with sound.
@@ -23,7 +26,7 @@ Videos are muted by default; pass muted="false" for ones with sound.
 {{- end -}}
 {{- $muted := ne (.Get "muted") "false" -}}
 {{- with $video -}}
-<figure class="media-embed">
+<figure class="media-embed media-embed--video">
   <video
     controls
     playsinline
@@ -34,5 +37,8 @@ Videos are muted by default; pass muted="false" for ones with sound.
     <source src="{{ .RelPermalink }}" type="{{ .MediaType.Type }}">
     <a href="{{ .RelPermalink }}">Download the video</a>
   </video>
+  {{- with $.Get "caption" }}
+  <figcaption><p>{{ . | markdownify }}</p></figcaption>
+  {{- end }}
 </figure>
 {{- end -}}

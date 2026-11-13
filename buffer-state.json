@@ -136,7 +136,10 @@
           "service": "linkedin",
           "attemptedAt": "2026-11-13T08:37:41.060Z",
           "mode": "draft",
-          "status": "unconfirmed"
+          "status": "draft",
+          "id": "6af6cc562960b358b6b768b3",
+          "dueAt": null,
+          "acceptedAt": "2026-11-13T08:37:42.305Z"
         }
       }
     }

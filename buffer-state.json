@@ -154,7 +154,10 @@
           "service": "bluesky",
           "attemptedAt": "2026-11-13T08:37:45.232Z",
           "mode": "draft",
-          "status": "unconfirmed"
+          "status": "draft",
+          "id": "6af6cc5ad63384b8e432034a",
+          "dueAt": null,
+          "acceptedAt": "2026-11-13T08:37:46.335Z"
         }
       }
     }

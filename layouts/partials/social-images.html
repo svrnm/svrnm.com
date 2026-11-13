@@ -28,7 +28,7 @@
 {{- if and (not $imgs) .IsPage (eq .Section "blog") -}}
   {{- $base := resources.Get "images/social-card-base.png" -}}
   {{- $domain := (urls.Parse site.BaseURL).Host -}}
-  {{- $title := .Title | plainify | htmlUnescape | truncate 130 -}}
+  {{- $title := .Title | plainify | htmlUnescape | truncate 130 | string -}}
   {{- $card := $base.Filter
     (images.Text $domain (dict "color" "#68d6bd" "size" 38 "x" 80 "y" 65))
     (images.Text $title (dict "color" "#f1f1f1" "size" 58 "linespacing" 14 "x" 80 "y" 205))

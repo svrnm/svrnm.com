@@ -172,6 +172,12 @@
           "id": "6af7162d4f78da1d8ba67602",
           "dueAt": null,
           "acceptedAt": "2026-11-13T13:52:45.392Z"
+        },
+        "66d8570cca3dab3e0a40b4c4": {
+          "service": "mastodon",
+          "attemptedAt": "2026-11-13T13:52:46.418Z",
+          "mode": "draft",
+          "status": "unconfirmed"
         }
       }
     }

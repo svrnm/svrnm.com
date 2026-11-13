@@ -128,6 +128,17 @@
           "checkedAt": "2026-10-16T11:29:40.122Z"
         }
       }
+    },
+    "https://svrnm.com/blog/what-is-context-propagation-why-do-i-need-it/": {
+      "title": "What is context propagation, why do I need it, and what does it have to do with metrics?",
+      "submissions": {
+        "6ac7d93f6a5c39ccb654259d": {
+          "service": "linkedin",
+          "attemptedAt": "2026-11-13T08:37:41.060Z",
+          "mode": "draft",
+          "status": "unconfirmed"
+        }
+      }
     }
   }
 }

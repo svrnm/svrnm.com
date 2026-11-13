@@ -1,5 +1,7 @@
 ---
 title: What is context propagation, why do I need it, and what does it have to do with metrics?
+aliases:
+  - /blog/what-is-contaxt-propagation-why-do-i-need-it/
 cover:
   image: "context-propagation-3.png"
   alt: ""

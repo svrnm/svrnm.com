@@ -1,0 +1,11 @@
+{{- /* RSS variant of deck.html: feed readers and dev.to strip iframes and <video>, so link
+       to the live slides and, if there is one, to the recording on the post. */ -}}
+{{- $open := .Get "open" | default (.Get "slides") -}}
+{{- $title := .Get "title" | default "Slides" -}}
+{{- $poster := "" -}}
+{{- with .Get "poster" }}{{ with $.Page.Resources.GetMatch . }}{{ $poster = .Permalink }}{{ end }}{{ end -}}
+{{- with $poster }}
+<p><a href="{{ $open }}"><img src="{{ . }}" alt="{{ $title }}"></a></p>
+{{- end }}
+<p>👉 <a href="{{ $open }}"><strong>Click through the slides: {{ $title }}</strong></a>
+{{- with .Get "video" }} or <a href="{{ $.Page.Permalink }}">watch the video walkthrough on svrnm.com</a>{{ end }}</p>

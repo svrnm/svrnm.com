@@ -1,0 +1,2 @@
+{{- /* RSS variant of embed.html: feed readers and dev.to strip iframes, so link instead. */ -}}
+<p>👉 <a href="{{ .Get "open" | default (.Get "src") }}"><strong>{{ .Get "title" | default "Open the embedded page" }}</strong></a>{{ with .Get "hint" }} ({{ . }}){{ end }}</p>

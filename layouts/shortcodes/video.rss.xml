@@ -1,0 +1,11 @@
+{{- /* RSS variant of video.html: feed readers and dev.to strip <video>, so show the poster
+       (if any) and link to the post, where the clip plays. */ -}}
+{{- $poster := "" -}}
+{{- with .Get "poster" }}{{ with $.Page.Resources.GetMatch . }}{{ $poster = .Permalink }}{{ end }}{{ end -}}
+{{- $label := .Get "title" | default "Video" -}}
+<figure>
+  {{- with $poster }}
+  <a href="{{ $.Page.Permalink }}"><img src="{{ . }}" alt="{{ $label }}"></a>
+  {{- end }}
+  <figcaption><p>{{ with $.Get "caption" }}{{ . | markdownify }}<br>{{ end }}<a href="{{ $.Page.Permalink }}">▶ Watch the video on svrnm.com</a></p></figcaption>
+</figure>

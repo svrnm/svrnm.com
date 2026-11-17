@@ -1,0 +1,7 @@
+{{- /* RSS variant of Hugo's built-in youtube shortcode: feed readers and dev.to
+       strip iframes, so show the thumbnail linked to the video. */ -}}
+{{- $id := or (.Get "id") (.Get 0) -}}
+{{- with $id -}}
+<p><a href="https://www.youtube.com/watch?v={{ . }}"><img src="https://i.ytimg.com/vi/{{ . }}/hqdefault.jpg" alt="{{ or ($.Get "title") "YouTube video" }}"></a><br>
+▶ <a href="https://www.youtube.com/watch?v={{ . }}">{{ or ($.Get "title") "Watch on YouTube" }}</a></p>
+{{- end -}}

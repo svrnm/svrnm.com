@@ -1,0 +1,3 @@
+{{- /* RSS variant of the hugo-animation-loader animation shortcode: the
+       animations need JavaScript, so link to the post where they run. */ -}}
+<blockquote><p>🎞️ <em>{{ .Get "alt" | default "Interactive animation" }}</em>: <a href="{{ .Page.Permalink }}">try it in the original post on svrnm.com</a>.</p></blockquote>

@@ -90,7 +90,9 @@ in layouts/shortcodes that link back to the post instead. See docs/rss.md.
       {{- $c := string . -}}
       {{- $c = replaceRE `\b(src|href|poster)="\.\./` (printf `$1="%s` $item.Parent.Permalink) $c -}}
       {{- $c = replaceRE `\b(src|href|poster)="/([^/])` (printf `$1="%s/$2` $base) $c -}}
-      {{- $c = replaceRE `\b(src|href|poster)="(?:\./)?([^"#/:.?][^":]*)"` (printf `$1="%s$2"` $item.Permalink) $c }}
+      {{- $c = replaceRE `\b(src|href|poster)="(?:\./)?([^"#/:.?][^":]*)"` (printf `$1="%s$2"` $item.Permalink) $c -}}
+      {{- /* #fn:1 → post URL#fn:1: readers and dev.to drop the anchor ids. */ -}}
+      {{- $c = replaceRE `\bhref="#` (printf `href="%s#` $item.Permalink) $c }}
       <content:encoded>{{ printf "<![CDATA[%s]]>" (replace $c "]]>" "]]]]><![CDATA[>") | safeHTML }}</content:encoded>
       {{- end }}
     </item>

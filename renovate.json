@@ -1,18 +1,39 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "schedule": ["before 6am on monday"],
+  "extends": [
+    "config:recommended"
+  ],
+  "schedule": [
+    "before 6am on monday"
+  ],
   "semanticCommits": "enabled",
   "semanticCommitType": "chore",
   "prConcurrentLimit": 5,
-  "git-submodules": { "enabled": true },
+  "git-submodules": {
+    "enabled": true
+  },
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["/^\\.github/workflows/.*\\.ya?ml$/"],
-      "matchStrings": ["HUGO_VERSION: \"(?<currentValue>[^\"]+)\""],
+      "managerFilePatterns": [
+        "/^\\.github/workflows/.*\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "HUGO_VERSION: \"(?<currentValue>[^\"]+)\""
+      ],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "gohugoio/hugo"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDepTypes": [
+        "indirect"
+      ],
+      "enabled": true
     }
   ]
 }

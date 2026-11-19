@@ -1,6 +1,10 @@
 {{- $posts := slice -}}
 {{- range where site.RegularPages "Section" "blog" -}}
   {{- $social := .Params.social | default dict -}}
-  {{- $posts = $posts | append (dict "title" .Title "url" .Permalink "text" ($social.text | default .Title) "skip" ($social.skip | default false)) -}}
+  {{- $images := partial "social-images.html" . -}}
+  {{- $image := "" -}}
+  {{- with index $images 0 -}}{{- $image = .Permalink -}}{{- end -}}
+  {{- $description := (.Description | default .Summary) | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace | truncate 240 -}}
+  {{- $posts = $posts | append (dict "description" $description "image" $image "title" .Title "url" .Permalink "text" ($social.text | default .Title) "skip" ($social.skip | default false)) -}}
 {{- end -}}
 {{- dict "version" 1 "posts" $posts | jsonify -}}

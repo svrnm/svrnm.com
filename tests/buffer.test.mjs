@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { BufferClient, GitHubStore, validateManifest, selectChannels, submit, check } from '../scripts/buffer.mjs';
+import { BufferClient, GitHubStore, validateManifest, selectChannels, submit, check, linkMetadata, refreshPreviews } from '../scripts/buffer.mjs';
 
 const channels = ['linkedin', 'mastodon', 'bluesky'].map(service => ({ id: service, service, name: 'Severin', organizationId: 'org', isDisconnected: false, isLocked: false }));
 const post = (slug, extra = {}) => ({ title: slug, text: slug, url: `https://svrnm.com/blog/${slug}/`, skip: false, ...extra });
@@ -8,8 +8,8 @@ const fixture = () => {
   const saved = [];
   const calls = [];
   const store = { save: async state => saved.push(structuredClone(state)) };
-  const buffer = { create: async (channel, text, mode) => {
-    calls.push({ channel, text, mode });
+  const buffer = { create: async (channel, text, mode, post) => {
+    calls.push({ channel, text, mode, post });
     return { id: `post-${calls.length}`, status: 'draft', dueAt: null };
   } };
   return { store, buffer, saved, calls, channels, log: () => {} };
@@ -88,11 +88,11 @@ test('API draft payload is explicit and publication status uses the saved ID', a
     requests.push({ url, ...JSON.parse(options.body), headers: options.headers });
     return { ok: true, json: async () => ({ data: { createPost: { post: { id: 'p1', status: 'draft' } }, post: { id: 'p1', status: 'sent' } } }) };
   });
-  await client.create(channels[0], 'text', 'draft');
+  await client.create(channels[0], 'text', 'draft', post('new'));
   assert.equal(requests[0].variables.input.saveToDraft, true);
   assert.equal(requests[0].variables.input.needsApproval, false);
   assert.deepEqual(requests[0].variables.input.assets, []);
-  await client.create(channels[0], 'text', 'queue');
+  await client.create(channels[0], 'text', 'queue', post('new'));
   assert.equal(requests[1].variables.input.saveToDraft, false);
   assert.equal((await client.post('p1')).status, 'sent');
   assert.deepEqual(requests[2].variables, { input: { id: 'p1' } });
@@ -132,6 +132,10 @@ test('Hugo manifest includes only public blog pages, with canonical URLs and soc
   try {
     await mkdir(join(root, 'layouts'), { recursive: true });
     await writeFile(join(root, 'layouts/index.blogmanifest.json'), await readFile(new URL('../layouts/index.blogmanifest.json', import.meta.url)));
+    for (const file of ['layouts/partials/social-images.html', 'assets/images/social-card-base.png']) {
+      await mkdir(join(root, file.slice(0, file.lastIndexOf('/'))), { recursive: true });
+      await writeFile(join(root, file), await readFile(new URL(`../${file}`, import.meta.url)));
+    }
     await writeFile(join(root, 'hugo.toml'), `baseURL = "https://svrnm.com/"\n[outputFormats.BlogManifest]\nmediaType = "application/json"\nbaseName = "blog-manifest"\nisPlainText = true\nnotAlternative = true\n[outputs]\nhome = ["BlogManifest"]\n`);
     const writePost = async (path, frontmatter) => {
       const full = join(root, 'content', path);
@@ -140,6 +144,9 @@ test('Hugo manifest includes only public blog pages, with canonical URLs and soc
     };
     await writePost('blog/public/index.md', 'url: /custom/\nsocial:\n  text: Custom announcement');
     await writePost('blog/skipped/index.md', 'social:\n  skip: true');
+    await writePost('blog/covered/index.md', 'description: A description for the card.\ncover:\n  image: cover.png\n  relative: true');
+    await writeFile(join(root, 'content/blog/covered/cover.png'), await readFile(new URL('../assets/images/social-card-base.png', import.meta.url)));
+    await writePost('blog/explicit/index.md', 'images: [https://images.example/custom.png]');
     await writePost('blog/draft/index.md', 'draft: true');
     await writePost('blog/future/index.md', 'publishDate: 2999-01-01');
     await writePost('blog/expired/index.md', 'expiryDate: 2021-01-01');
@@ -147,9 +154,18 @@ test('Hugo manifest includes only public blog pages, with canonical URLs and soc
     await writePost('publications/article.md', 'categories: [blog]');
     execFileSync('hugo', ['--source', root, '--quiet'], { stdio: 'pipe' });
     const posts = validateManifest(JSON.parse(await readFile(join(root, 'public/blog-manifest.json'), 'utf8')));
-    assert.equal(posts.length, 2);
+    assert.equal(posts.length, 4);
     assert.equal(posts.find(p => p.url === 'https://svrnm.com/custom/').text, 'Custom announcement');
     assert.equal(posts.find(p => p.url.includes('/skipped/')).skip, true);
+    const fallback = posts.find(p => p.url === 'https://svrnm.com/custom/');
+    assert.match(fallback.image, /^https:\/\/svrnm.com\/images\/social-card-base.*\.png$/);
+    const png = await readFile(join(root, 'public', new URL(fallback.image).pathname));
+    assert.equal(png.readUInt32BE(16), 1200);
+    assert.equal(png.readUInt32BE(20), 630);
+    const cover = posts.find(p => p.url.includes('/covered/'));
+    assert.equal(cover.image, 'https://svrnm.com/blog/covered/cover.png');
+    assert.equal(cover.description, 'A description for the card.');
+    assert.equal(posts.find(p => p.url.includes('/explicit/')).image, 'https://images.example/custom.png');
   } finally {
     await rm(root, { recursive: true, force: true });
   }
@@ -160,4 +176,51 @@ test('missing state on an existing branch is not silently treated as a new basel
     ? { status: 404 }
     : { ok: true, json: async () => ({ ref: 'refs/heads/buffer-state' }) });
   await assert.rejects(store.load(), /state file is missing/);
+});
+
+
+test('LinkedIn and Bluesky receive link cards; Mastodon keeps its native URL preview', () => {
+  const article = post('new', { description: 'Description', image: 'https://svrnm.com/images/card.png' });
+  for (const service of ['linkedin', 'bluesky']) {
+    assert.deepEqual(linkMetadata({ service }, article), { [service]: { linkAttachment: {
+      url: article.url, title: article.title, description: article.description,
+      thumbnail: { url: article.image },
+    } } });
+  }
+  assert.deepEqual(linkMetadata({ service: 'mastodon' }, article), {});
+});
+
+test('submission forwards the article metadata to the Buffer client', async () => {
+  const f = fixture();
+  const state = await submit({ ...f, posts: [] });
+  const article = post('new', { description: 'Description', image: 'https://svrnm.com/images/card.png' });
+  await submit({ ...f, posts: [article], state });
+  assert.ok(f.calls.every(call => call.post.image === article.image && call.post.description === article.description));
+});
+
+test('refresh updates existing drafts only, without creating or scheduling posts', async () => {
+  const f = fixture();
+  const state = await submit({ ...f, posts: [] });
+  const article = post('new', { image: 'https://svrnm.com/images/card.png' });
+  await submit({ ...f, posts: [article], state });
+  const edits = [];
+  f.buffer.post = async id => ({ id, channelId: id === 'post-1' ? 'linkedin' : 'bluesky', status: id === 'post-1' ? 'draft' : 'sent' });
+  f.buffer.editPreview = async (...args) => edits.push(args);
+  await refreshPreviews({ ...f, state, posts: [article], url: article.url });
+  assert.equal(edits.length, 1);
+  assert.equal(edits[0][0], 'post-1');
+  assert.equal(f.calls.length, 3);
+  assert.ok(state.posts[article.url].submissions.linkedin.previewUpdatedAt);
+  await assert.rejects(refreshPreviews({ ...f, state, posts: [article], url: 'https://svrnm.com/unknown/' }), /Refresh URL/);
+});
+
+test('preview edits send metadata without scheduling, changing text, or removing media', async () => {
+  let input;
+  const client = new BufferClient('test-key', async (url, options) => {
+    input = JSON.parse(options.body).variables.input;
+    return { ok: true, json: async () => ({ data: { editPost: { post: { id: 'existing', status: 'draft' } } } }) };
+  });
+  await client.editPreview('existing', channels[0], post('new'));
+  assert.deepEqual(Object.keys(input).sort(), ['id', 'metadata']);
+  assert.equal(input.metadata.linkedin.linkAttachment.url, post('new').url);
 });

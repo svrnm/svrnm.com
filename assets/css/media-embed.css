@@ -13,6 +13,20 @@
     height: auto;
 }
 
+/* Videos look like images from the figure shortcode: only the player is
+   rounded (4px, as .post-content img) and the caption sits below it, outside
+   the tinted box the iframe embeds use. */
+.media-embed--video {
+    overflow: visible;
+    border-radius: 0;
+    background: none;
+}
+
+.media-embed--video video {
+    border-radius: 4px;
+    background: var(--tertiary);
+}
+
 /* Live iframe: a window-like frame with a title bar, so it reads as
    something you can interact with rather than a static image. */
 .media-embed--live {

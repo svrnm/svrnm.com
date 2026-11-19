@@ -1,0 +1,11 @@
+{{- /* RSS variant of render-blockquote-alert.html, without the inline SVG icon. */ -}}
+{{- if eq .Type "alert" -}}
+<blockquote>
+  <p><strong>{{ with .AlertTitle }}{{ . }}{{ else }}{{ or (i18n .AlertType) (title .AlertType) }}{{ end }}</strong></p>
+  {{ .Text }}
+</blockquote>
+{{- else -}}
+<blockquote>
+  {{ .Text }}
+</blockquote>
+{{- end -}}

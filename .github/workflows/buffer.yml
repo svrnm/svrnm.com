@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '17 */6 * * *'
   workflow_dispatch:
+    inputs:
+      refresh_url:
+        description: "Optional blog URL: update link previews on its existing Buffer drafts"
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -49,5 +54,6 @@ jobs:
           BUFFER_MODE: ${{ vars.BUFFER_MODE || 'draft' }}
           BUFFER_CHANNEL_IDS: ${{ vars.BUFFER_CHANNEL_IDS }}
           BUFFER_ORGANIZATION_ID: ${{ vars.BUFFER_ORGANIZATION_ID }}
-          BUFFER_COMMAND: ${{ github.event_name == 'workflow_run' && 'submit' || 'check' }}
+          BUFFER_REFRESH_URL: ${{ inputs.refresh_url }}
+          BUFFER_COMMAND: ${{ github.event_name == 'workflow_run' && 'submit' || (inputs.refresh_url != '' && inputs.refresh_url != null && 'refresh' || 'check') }}
         run: node scripts/buffer.mjs "$BUFFER_COMMAND" buffer-input/blog-manifest.json

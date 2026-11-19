@@ -1,0 +1,4 @@
+{{- /* RSS variant of youtubeshort.html: feed readers and dev.to strip iframes, so link. */ -}}
+{{- $arg := or (.Get "id") (.Get 0) -}}
+{{- $url := cond (strings.Contains $arg "/") $arg (printf "https://www.youtube.com/shorts/%s" $arg) -}}
+<p>▶ <a href="{{ $url }}">{{ or (.Get "title") "Watch on YouTube" }}</a></p>

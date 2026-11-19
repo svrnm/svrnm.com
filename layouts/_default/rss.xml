@@ -1,3 +1,10 @@
+{{- /*
+Copy of themes/PaperMod/layouts/_default/rss.xml that always includes the full
+post in content:encoded, with absolute URLs, plus tags as <category>. Feed
+readers and dev.to (which imports /blog/index.xml) strip <video>, iframes,
+scripts and inline SVG, so shortcodes that use them have *.rss.xml variants
+in layouts/shortcodes that link back to the post instead. See docs/rss.md.
+*/ -}}
 {{- /* Deprecate site.Author.email in favor of site.Params.author.email */}}
 {{- $authorEmail := "" }}
 {{- with site.Params.author }}
@@ -30,6 +37,7 @@
   {{- end }}
 {{- end }}
 
+{{- $base := strings.TrimSuffix "/" site.BaseURL }}
 {{- $pctx := . }}
 {{- if .IsHome }}{{ $pctx = site }}{{ end }}
 {{- $pages := slice }}
@@ -56,7 +64,7 @@
     </image>
     {{- end }}
     <generator>Hugo -- {{ hugo.Version }}</generator>
-    <language>{{ site.Language.Locale }}</language>{{ with $authorEmail }}
+    <language>{{ site.Language.LanguageCode }}</language>{{ with $authorEmail }}
     <managingEditor>{{.}}{{ with $authorName }} ({{ . }}){{ end }}</managingEditor>{{ end }}{{ with $authorEmail }}
     <webMaster>{{ . }}{{ with $authorName }} ({{ . }}){{ end }}</webMaster>{{ end }}{{ with site.Copyright }}
     <copyright>{{ . | markdownify | plainify | strings.TrimPrefix "© " }}</copyright>{{ end }}{{ if not .Date.IsZero }}
@@ -66,6 +74,7 @@
     {{- end }}
     {{- range $pages }}
     {{- if and (ne .Layout `search`) (ne .Layout `archives`) }}
+    {{- $item := . }}
     <item>
       <title>{{ .Title }}</title>
       <link>{{ .Permalink }}</link>
@@ -73,8 +82,18 @@
       {{- with $authorEmail }}<author>{{ . }}{{ with $authorName }} ({{ . }}){{ end }}</author>{{ end }}
       <guid>{{ .Permalink }}</guid>
       <description>{{ with .Description | html }}{{ . }}{{ else }}{{ .Summary | html }}{{ end -}}</description>
-      {{- if and site.Params.ShowFullTextinRSS .Content }}
-      <content:encoded>{{ (printf "<![CDATA[%s]]>" .Content) | safeHTML }}</content:encoded>
+      {{- range .Params.tags }}
+      <category>{{ . }}</category>
+      {{- end }}
+      {{- with .Content }}
+      {{- /* Make URLs absolute: the content is read outside svrnm.com. */ -}}
+      {{- $c := string . -}}
+      {{- $c = replaceRE `\b(src|href|poster)="\.\./` (printf `$1="%s` $item.Parent.Permalink) $c -}}
+      {{- $c = replaceRE `\b(src|href|poster)="/([^/])` (printf `$1="%s/$2` $base) $c -}}
+      {{- $c = replaceRE `\b(src|href|poster)="(?:\./)?([^"#/:.?][^":]*)"` (printf `$1="%s$2"` $item.Permalink) $c -}}
+      {{- /* #fn:1 → post URL#fn:1: readers and dev.to drop the anchor ids. */ -}}
+      {{- $c = replaceRE `\bhref="#` (printf `href="%s#` $item.Permalink) $c }}
+      <content:encoded>{{ printf "<![CDATA[%s]]>" (replace $c "]]>" "]]]]><![CDATA[>") | safeHTML }}</content:encoded>
       {{- end }}
     </item>
     {{- end }}

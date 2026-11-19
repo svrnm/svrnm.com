@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Pin Hugo version for reproducible builds
-      HUGO_VERSION: "0.146.0"
+      HUGO_VERSION: "0.170.1"
     steps:
       - name: Checkout repository
         # OpenSSF: Pin to specific version (v4) - for maximum security, pin to full commit SHA

@@ -4,11 +4,16 @@ on:
   push:
     branches:
       - main
+  # Build and test PRs; the deploy job is skipped for them
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 # Allow only one concurrent deployment
 concurrency:
-  group: "pages"
+  # PR runs get their own group so they never cancel a production deploy
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.ref) || 'pages' }}
   cancel-in-progress: true
 
 # Default to bash
@@ -86,6 +91,7 @@ jobs:
           path: ./public
 
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

@@ -142,7 +142,7 @@
           "acceptedAt": "2026-11-13T08:37:42.305Z",
           "sentAt": null,
           "externalLink": null,
-          "checkedAt": "2026-11-22T19:44:51.561Z"
+          "checkedAt": "2026-11-23T07:45:07.061Z"
         },
         "66d8570cca3dab3e0a40b4c4": {
           "service": "mastodon",
@@ -154,7 +154,7 @@
           "acceptedAt": "2026-11-13T08:37:44.386Z",
           "sentAt": null,
           "externalLink": null,
-          "checkedAt": "2026-11-22T19:44:51.632Z"
+          "checkedAt": "2026-11-23T07:45:07.153Z"
         },
         "6ac7d96f6a5c39ccb65426f5": {
           "service": "bluesky",
@@ -166,7 +166,7 @@
           "acceptedAt": "2026-11-13T08:37:46.335Z",
           "sentAt": null,
           "externalLink": null,
-          "checkedAt": "2026-11-22T19:44:51.715Z"
+          "checkedAt": "2026-11-23T07:45:07.267Z"
         }
       }
     },
